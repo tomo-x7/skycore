@@ -9,14 +9,15 @@
 		"build": "run-s build:*",
 		"build:units": "node ./esbuild.js",
 		"build:vite": "tsc -b && vite build",
-		"preview": "http-server ./dist -p 8080",
+		"preview": "servor ./dist index.html 8080",
 		"lint": "biome lint --write",
 		"format": "biome format --write"
 	},
 	"dependencies": {
 		"dayjs": "^1.11.13",
 		"react": "^18.3.1",
-		"react-dom": "^18.3.1"
+		"react-dom": "^18.3.1",
+		"react-router-dom": "^6.27.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
@@ -25,8 +26,8 @@
 		"@vitejs/plugin-react": "^4.3.3",
 		"chokidar": "^4.0.1",
 		"esbuild": "^0.24.0",
-		"http-server": "^14.1.1",
 		"npm-run-all2": "^7.0.1",
+		"servor": "^4.0.2",
 		"typescript": "~5.6.2",
 		"vite": "^5.4.10"
 	}
