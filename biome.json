@@ -1,7 +1,7 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
 	"files": {
-		"ignore": ["**/node_modules/**","dist/**"],
+		"ignore": ["**/node_modules/**", "dist/**", "public/units/**"],
 		"include": ["*.*"]
 	},
 	"formatter": {
@@ -16,7 +16,9 @@
 			"a11y": { "useKeyWithClickEvents": "off" },
 			"style": { "noUselessElse": "off" },
 			"correctness": { "noUnusedImports": "info" }
-		},
-		"ignore": ["tsconfig.*"]
-	}
+		}
+	},
+	"overrides": [
+		{ "include": ["tsconfig.*.json"], "json": { "parser": { "allowComments": true, "allowTrailingCommas": true } } }
+	]
 }

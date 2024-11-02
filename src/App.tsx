@@ -6,7 +6,7 @@ export function App() {
 	const [unit1src, setunit1src] = useState<string>();
 	const [unit1, setunit1] = useState<React.ReactElement>();
 	useEffect(() => {
-		(import(unit1src ?? "/units/test.js") as importunit<unit1>).then(({default:unit1}) => {
+		(import(unit1src ?? "/units/test.js") as importunit<unit1>).then(({ default: unit1 }) => {
 			setunit1(unit1({ React }));
 		});
 	}, [unit1src]);

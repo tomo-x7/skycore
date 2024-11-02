@@ -21,22 +21,29 @@ const stopServer = () => {
 		console.log(`stop server : ${pid}`);
 		try {
 			process.kill(pid);
-			pid=undefined
+			pid = undefined;
 		} catch {}
 	} else {
 		console.log("server not running");
 	}
 };
-
-startServer();
-watcher.on("change", async (...param) => {
-	console.log(`changed files : ${param[0]}`);
+const build = () => {
 	try {
-		execSync("pnpm run build > devbuild.log");
-		console.log("build success");
+		const hrstart = process.hrtime();
+		execSync(
+			'(echo "esbuild\n" &&node ./esbuild.js && echo "\nvite\n" && ./node_modules/.bin/vite build )> devbuild.log',
+		);
+		const hrend = process.hrtime(hrstart);
+		console.log("build success : %dms", hrend[0] * 1000 + hrend[1] / 1000000);
 	} catch (e) {
 		console.error(e);
 	}
+};
+build();
+startServer();
+watcher.on("change", (...param) => {
+	console.log(`changed files : ${param[0]}`);
+	build();
 });
 
 const cleanup = () => {
