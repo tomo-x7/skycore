@@ -17,7 +17,9 @@ export function Sidebar() {
 		<div>
 			{links.map((linkd, i) => (
 				<div key={`${i + linkd.src}`}>
-					<Link style={{textDecoration:"none"}} to={linkd.src}>{linkd.text}</Link>
+					<Link style={{ textDecoration: "none" }} to={linkd.src}>
+						{linkd.text}
+					</Link>
 				</div>
 			))}
 		</div>

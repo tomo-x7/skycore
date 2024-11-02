@@ -1,3 +1,3 @@
-export function Search(){
-    return <>search</>
+export function Search() {
+	return <>search</>;
 }

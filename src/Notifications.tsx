@@ -1,3 +1,3 @@
-export function Notifications(){
-    return <>notifications</>
+export function Notifications() {
+	return <>notifications</>;
 }

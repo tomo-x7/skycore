@@ -1,11 +1,12 @@
-import { useParams } from "react-router-dom"
+import { useParams } from "react-router-dom";
 
-export function Post(){
-    const {user,rkey}=useParams()
-    return <>{user}'s {rkey}post</>
+export function Post() {
+	const { user, rkey } = useParams();
+	return (
+		<>
+			{user}'s {rkey}post
+		</>
+	);
 }
 
-
-function PostView(){
-    
-}
+function PostView() {}

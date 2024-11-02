@@ -1,7 +1,4 @@
-import { useEffect, useState } from "react";
-import type { importunit, unit1 } from "./unittype";
-import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { Home } from "./Home";
 import { Search } from "./Search";
 import { Sidebar } from "./Sidebar";
@@ -13,11 +10,11 @@ import { Navibar } from "./Navibar";
 
 export function App() {
 	return (
-		<div style={{display:"flex"}}>
-			<div style={{flexShrink:1,flexGrow:1}}>
+		<div style={{ display: "flex" }}>
+			<div style={{ flexShrink: 1, flexGrow: 1 }}>
 				<Sidebar />
 			</div>
-			<div style={{flexBasis:"600px",flexShrink:0,flexGrow:0}}>
+			<div style={{ flexBasis: "600px", flexShrink: 0, flexGrow: 0 }}>
 				<Routes>
 					<Route path="search" element={<Search />} />
 					<Route path="notifications" element={<Notifications />} />
@@ -30,7 +27,7 @@ export function App() {
 					<Route path="*" element={<Home />} />
 				</Routes>
 			</div>
-			<div style={{flexShrink:1,flexGrow:1}}> 
+			<div style={{ flexShrink: 1, flexGrow: 1 }}>
 				<Navibar />
 			</div>
 		</div>

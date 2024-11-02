@@ -1,3 +1,3 @@
-export function Home(){
-    return <>timeline</>
+export function Home() {
+	return <>timeline</>;
 }

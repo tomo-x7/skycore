@@ -1,3 +1,3 @@
-export function Settings(){
-    return <>settings</>
+export function Settings() {
+	return <>settings</>;
 }

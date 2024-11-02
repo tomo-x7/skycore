@@ -1,6 +1,5 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { App } from "./App.tsx";
 import { Loader } from "./Loader.tsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Config } from "./Config.tsx";

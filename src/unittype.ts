@@ -10,5 +10,4 @@ export type unit<T extends Record<string, unknown> | undefined = undefined> = T 
 	? (React: typeof reactns) => JSX.Element
 	: (React: typeof reactns, params: T) => JSX.Element;
 
-
 export type unit1 = unit;
