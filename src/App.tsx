@@ -7,8 +7,9 @@ import { Settings } from "./Settings";
 import { Profile } from "./Profile";
 import { Post } from "./Post";
 import { Navibar } from "./Navibar";
+import type { Agent } from "@atproto/api";
 
-export function App() {
+export function App({agent}:{agent:Agent}) {
 	return (
 		<div style={{ display: "flex" }}>
 			<div style={{ flexShrink: 1, flexGrow: 1 }}>
@@ -21,7 +22,7 @@ export function App() {
 					<Route path="messages" element={<Home />} />
 					<Route path="feeds" element={<Home />} />
 					<Route path="lists" element={<Home />} />
-					<Route path="profile/:user/post/:rkey" element={<Post />} />
+					<Route path="profile/:user/post/:rkey" element={<Post agent={agent} />} />
 					<Route path="profile/:user" element={<Profile />} />
 					<Route path="settings" element={<Settings />} />
 					<Route path="*" element={<Home />} />

@@ -13,6 +13,8 @@
 		"format": "biome format --write"
 	},
 	"dependencies": {
+		"@atproto/api": "^0.13.14",
+		"@atproto/oauth-client-browser": "^0.3.0",
 		"dayjs": "^1.11.13",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",

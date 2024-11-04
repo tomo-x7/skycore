@@ -6,12 +6,10 @@ import { Config } from "./Config.tsx";
 
 // biome-ignore lint/style/noNonNullAssertion: <explanation>
 createRoot(document.getElementById("root")!).render(
-	<StrictMode>
 		<BrowserRouter>
 			<Routes>
 				<Route path="/config" element={<Config />} />
 				<Route path="*" element={<Loader />} />
 			</Routes>
 		</BrowserRouter>
-	</StrictMode>,
 );
