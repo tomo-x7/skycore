@@ -1,14 +1,6 @@
-import { useLocation, useParams } from "react-router-dom";
-import type { AtpAgent, AppBskyFeedDefs, Agent } from "@atproto/api";
-import { useEffect, useState } from "react";
+import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
+import { LinkProps, Link as ReactLink } from "react-router-dom";
 
-type data =
-	| { type: "thread"; data: AppBskyFeedDefs.ThreadViewPost }
-	| { type: "notFound"; data: AppBskyFeedDefs.NotFoundPost }
-	| { type: "blocked"; data: AppBskyFeedDefs.BlockedPost }
-	| { type: "post"; data: AppBskyFeedDefs.PostView }
-	| { type: "error"; data: string }
-	| undefined;
 const isNotFound = (data: unknown): data is AppBskyFeedDefs.NotFoundPost => {
 	if (typeof data === "object" && data !== null && (data as AppBskyFeedDefs.NotFoundPost).notFound === true) {
 		return true;
@@ -21,90 +13,70 @@ const isBlocked = (data: unknown): data is AppBskyFeedDefs.BlockedPost => {
 	}
 	return false;
 };
-const isThread = (data: unknown): data is AppBskyFeedDefs.ThreadViewPost => {
-	if (
-		typeof data === "object" &&
-		data !== null &&
-		typeof (data as AppBskyFeedDefs.ThreadViewPost).post === "object"
-	) {
-		return true;
-	}
-	return false;
-};
-const getPost = async (
-	agent: Agent,
-	setpostview: React.Dispatch<React.SetStateAction<data>>,
-	user?: string,
-	rkey?: string,
-) => {
-	if (!user || !rkey) {
-		setpostview({ type: "error", data: "bad uri" });
-		return;
-	}
-	let did: string;
-	if (/^did:/.test(user)) {
-		did = user;
-	} else {
-		const res = await agent.resolveHandle({ handle: user });
-		if (res.success) {
-			did = res.data.did;
-		} else {
-			setpostview({ type: "error", data: "cannot resolve handle" });
-			return;
-		}
-	}
-	const res = await agent.getPostThread({ uri: `at://${did}/app.bsky.feed.post/${rkey}` }).catch((e) => {
-		setpostview({ type: "error", data: `cannot get post:${e}`.replace("Error:", "") });
-	});
-	if (!res) return;
-	if (isNotFound(res.data.thread)) {
-		setpostview({ type: "notFound", data: res.data.thread });
-		return;
-	}
-	if (isBlocked(res.data.thread)) {
-		setpostview({ type: "blocked", data: res.data.thread });
-		return;
-	}
-	if (isThread(res.data.thread)) {
-		setpostview({ type: "thread", data: res.data.thread });
-		return;
-	}
-};
-export function Post({ agent }: { agent: Agent }) {
-	const [postview, setpostview] = useState<data>();
-	const { user, rkey } = useParams();
-	const location = useLocation();
-	const post: AppBskyFeedDefs.PostView | undefined = location.state;
-	if (post) {
-		setpostview({ type: "post", data: post });
-	} else {
-		useEffect(() => void getPost(agent, setpostview, user, rkey), [agent, user, rkey]);
-	}
 
-	return <PostView data={postview} />;
-}
-
-function PostView({ data }: { data: data }) {
-	if (!data) {
-		return <>loading...</>;
-	}
-	if (data.type === "error") {
-		return <>error:{data.data}</>;
-	}
-	if (data.type === "blocked") {
+export function PostView({
+	post,
+	isTree = false,
+	hasParent = false,
+	hasReply = false,
+}: {
+	post: AppBskyFeedDefs.PostView | AppBskyFeedDefs.NotFoundPost | AppBskyFeedDefs.BlockedPost;
+	isTree?: boolean;
+	hasParent?: boolean;
+	hasReply?: boolean;
+}) {
+	if (isBlocked(post)) {
 		return <>blocked</>;
 	}
-	if (data.type === "notFound") {
+	if (isNotFound(post)) {
 		return <>notfound</>;
 	}
-	if (data.type === "post") {
-		return <>loading...</>;
-	}
-	if (data.type === "thread") {
-		return (
-			<>
-				{data.data.post.author.displayName}'s {data.data.post.uri}post
-			</>
-		);
+	const lineStyle: React.CSSProperties = { borderRight: "3px black solid", width: "15px", height: "50%" };
+	return (
+		<>
+			<div style={{position:"relative"}}>
+				<Link
+					active={isTree}
+					to={`/profile/${post.author.handle}/post/${post.uri.split("/")[4]}`}
+					state={post}
+					style={{
+						textDecoration: "none",
+						color: "inherit",
+						userSelect: "auto",
+						width: "100%",
+						height: "100%",
+						position: "absolute",display:"block",zIndex:0,cursor:"pointer"
+					}} tabIndex={0}
+				/>
+				<div style={{ display: "flex" ,zIndex:1}}>
+					{isTree && (
+						<div style={{ width: "15px" }}>
+							{hasParent ? <div style={lineStyle} /> : <div style={{ height: "50%" }} />}
+							{hasReply && <div style={lineStyle} />}
+						</div>
+					)}
+					<div>
+						<div style={{ marginLeft: isTree ? "15px" : "" }}>{post.author.displayName}'s post</div>
+						<div style={{ marginLeft: isTree ? "15px" : "", whiteSpace: "pre-wrap" }}>
+							{(post.record as AppBskyFeedPost.Record).text}
+						</div>
+						<div style={{ display: "flex", width: "100%", justifyContent: "space-around" }}>
+							<span>💭</span>
+							<span>🔁</span>
+							<span>❤</span>
+							<span>...</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</>
+	);
+}
+
+function Link({ active = true, ...props }: { active?: boolean } & LinkProps & React.RefAttributes<HTMLAnchorElement>) {
+	if (active) {
+		return <ReactLink {...props} />;
+	} else {
+		return props.children;
 	}
 }
