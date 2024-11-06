@@ -1,10 +1,8 @@
-import { params } from "./App";
+import type { params } from "./App";
 
-export function Notifications({params}:{params:params}) {
-	const {agent}=params
+export function Notifications({ params }: { params: params }) {
+	const { agent } = params;
 	return <>notifications</>;
 }
 
-function NotificationsView(){
-	
-}
+function NotificationsView() {}

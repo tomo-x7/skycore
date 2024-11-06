@@ -1,6 +1,6 @@
-import { CredentialSession, AtpAgent, Agent } from "@atproto/api";
+import { Agent } from "@atproto/api";
 import { App } from "./App";
-import { BrowserOAuthClient, OAuthSession } from "@atproto/oauth-client-browser";
+import { BrowserOAuthClient } from "@atproto/oauth-client-browser";
 import { useEffect, useRef, useState } from "react";
 
 const client = await BrowserOAuthClient.load({
@@ -14,7 +14,7 @@ const init = async (setagent: React.Dispatch<React.SetStateAction<Agent | "login
 		console.log("session loaded");
 		setagent(new Agent(result.session));
 	} else {
-		setagent("login")
+		setagent("login");
 	}
 };
 export function Loader() {

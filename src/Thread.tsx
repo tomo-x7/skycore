@@ -1,7 +1,7 @@
 import { useLocation, useParams } from "react-router-dom";
-import type { AtpAgent, AppBskyFeedDefs, Agent } from "@atproto/api";
-import { useEffect, useState } from "react";
-import { params } from "./App";
+import type { AppBskyFeedDefs, Agent } from "@atproto/api";
+import { useEffect, useRef, useState } from "react";
+import type { params } from "./App";
 import { PostView } from "./Post";
 
 type data =
@@ -82,16 +82,24 @@ export function Thread({ params }: { params: params }) {
 	const location = useLocation();
 	const post: AppBskyFeedDefs.PostView | undefined = location.state;
 	useEffect(() => {
-		if(post){
+		if (post) {
 			setdata({ type: "post", data: post });
 		}
 		getPost(agent, setdata, user, rkey);
-	}, [agent, user, rkey,post]);
+	}, [agent, user, rkey, post]);
 
 	return <ThreadView data={data} PostViewUnit={PostView} />;
 }
 
 function ThreadView({ data, PostViewUnit }: { data: data; PostViewUnit: typeof PostView }) {
+	const treeTopref = useRef<HTMLSpanElement>(null);
+	const [bottomSpaceHeight, setbottomSpaceHeight] = useState(0);
+	useEffect(() => {
+		if (data?.type === "thread" && treeTopref.current) {
+			setbottomSpaceHeight(window.innerHeight - treeTopref.current.clientHeight);
+			setTimeout(() => treeTopref.current?.scrollIntoView(), 0);
+		}
+	}, [data]);
 	if (!data) {
 		return <>loading...</>;
 	}
@@ -102,7 +110,29 @@ function ThreadView({ data, PostViewUnit }: { data: data; PostViewUnit: typeof P
 		return <PostViewUnit post={data.data} />;
 	}
 	if (data.type === "post") {
-		return <PostViewUnit post={data.data} />;
+		const id = Math.floor(Math.random() * 1000000);
+		return (
+			<>
+				<PostViewUnit key={data.data.uri} post={data.data} />
+				<style>
+					{`.loader${id} {
+						--_m: 
+							conic-gradient(#0000 10%,#000),
+							linear-gradient(#000 0 0) content-box;
+						-webkit-mask: var(--_m);
+						mask: var(--_m);
+						-webkit-mask-composite: source-out;
+						mask-composite: subtract;
+						animation: l3 1s infinite linear;
+					}
+					@keyframes l3 {to{transform: rotate(1turn)}}`}
+				</style>
+				<div
+					style={{ width: "50px", padding: "8px", aspectRatio: 1, borderRadius: "50%", background: "#000" }}
+					className={`loader${id}`}
+				/>
+			</>
+		);
 	}
 	if (data.type === "thread") {
 		const getParents = (
@@ -179,7 +209,6 @@ function ThreadView({ data, PostViewUnit }: { data: data; PostViewUnit: typeof P
 				),
 			);
 		console.log(replies);
-
 		return (
 			<>
 				{parents.toReversed().map((post, i) => (
@@ -191,8 +220,8 @@ function ThreadView({ data, PostViewUnit }: { data: data; PostViewUnit: typeof P
 						hasParent={i !== 0}
 					/>
 				))}
-				<span>
-					<PostViewUnit post={data.data.post} />
+				<span ref={treeTopref}>
+					<PostViewUnit key={data.data.post.uri} post={data.data.post} />
 				</span>
 				{replies.map((replies) => (
 					<div key={(replies[0].uri as string) ?? (replies[0].post as { uri: string }).uri}>
@@ -208,6 +237,7 @@ function ThreadView({ data, PostViewUnit }: { data: data; PostViewUnit: typeof P
 						))}
 					</div>
 				))}
+				{bottomSpaceHeight !== 0 && <div style={{ height: `${bottomSpaceHeight}px` }} />}
 			</>
 		);
 	}
