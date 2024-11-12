@@ -1,4 +1,4 @@
-import { Agent } from "@atproto/api";
+import { Agent, BskyPreferences } from "@atproto/api";
 import { App } from "./App";
 import { BrowserOAuthClient } from "@atproto/oauth-client-browser";
 import { useEffect, useRef, useState } from "react";
@@ -8,24 +8,34 @@ const client = await BrowserOAuthClient.load({
 	// Only works if the current origin is a loopback address:
 	clientId: `http://localhost?redirect_uri=${encodeURIComponent("http://127.0.0.1:5173/callback")}&scope=${encodeURIComponent("atproto transition:generic transition:chat.bsky")}`,
 });
-const init = async (setagent: React.Dispatch<React.SetStateAction<Agent | "login" | undefined>>) => {
+const init = async (): Promise<{ agent: Agent; pref: BskyPreferences } | { agent: "login" }> => {
 	const result = await client.init();
 	if (result) {
 		console.log("session loaded");
-		setagent(new Agent(result.session));
+		const agent = new Agent(result.session);
+		const pref = await agent.getPreferences();
+		return { pref, agent };
 	} else {
-		setagent("login");
+		return { agent: "login" };
 	}
 };
 export function Loader() {
 	const [agent, setagent] = useState<Agent | "login">();
+	const pref = useRef<BskyPreferences>();
 	useEffect(() => {
-		init(setagent);
+		init().then((d) => {
+			if (d.agent === "login") {
+				setagent(d.agent);
+			} else {
+				setagent(d.agent);
+				pref.current = d.pref;
+			}
+		});
 	}, []);
 	if (!agent) {
 		return <>loading session...</>;
 	}
-	if (agent === "login") {
+	if (agent === "login" || pref.current == null) {
 		return (
 			<>
 				<Login />
@@ -34,7 +44,7 @@ export function Loader() {
 	}
 	return (
 		<>
-			<App agent={agent} />
+			<App agent={agent} pref={pref.current} />
 		</>
 	);
 }

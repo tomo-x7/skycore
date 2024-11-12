@@ -1,7 +1,7 @@
-import type { params } from "./App";
+import { useDefaultParams, useUnitDefaultParams } from "./App";
 
-export function Notifications({ params }: { params: params }) {
-	const { agent } = params;
+export function Notifications() {
+	const { agent } = useDefaultParams();
 	return <>notifications</>;
 }
 

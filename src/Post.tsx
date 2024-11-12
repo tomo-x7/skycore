@@ -1,6 +1,7 @@
 import type { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { type LinkProps, useNavigate } from "react-router-dom";
+import { type UnitDefaultParams, useUnitDefaultParams } from "./App";
 
 const isNotFound = (data: unknown): data is AppBskyFeedDefs.NotFoundPost => {
 	if (typeof data === "object" && data !== null && (data as AppBskyFeedDefs.NotFoundPost).notFound === true) {
@@ -14,29 +15,89 @@ const isBlocked = (data: unknown): data is AppBskyFeedDefs.BlockedPost => {
 	}
 	return false;
 };
+const getPostRef = (post: { cid: string; uri: string }) => {
+	const { uri, cid } = post;
+	return { uri, cid };
+};
+export function PostView(params: {
+	post: AppBskyFeedDefs.PostView | AppBskyFeedDefs.NotFoundPost | AppBskyFeedDefs.BlockedPost;
+	isTree?: boolean;
+	hasReply?: boolean;
+	hasParent?: boolean;
+	root?: { cid: string; uri: string };
+}) {
+	return <PostViewUnit {...params} {...useUnitDefaultParams()} />;
+}
 
-export function PostView({
+export function PostViewUnit({
 	post,
 	isTree = false,
 	hasParent = false,
 	hasReply = false,
+	agent,
+	openNewPost,
+	root,
 }: {
 	post: AppBskyFeedDefs.PostView | AppBskyFeedDefs.NotFoundPost | AppBskyFeedDefs.BlockedPost;
 	isTree?: boolean;
 	hasParent?: boolean;
 	hasReply?: boolean;
-}) {
+	root?: { cid: string; uri: string };
+} & UnitDefaultParams) {
+	const [isopenRP, setOpenRP] = useState(false);
+	const [postRP, setpostRP] = useState<string | undefined>(
+		typeof post.viewer === "object" && post.viewer != null
+			? (post.viewer as { repost?: string })?.repost
+			: undefined,
+	);
 	if (isBlocked(post)) {
 		return <>blocked</>;
 	}
 	if (isNotFound(post)) {
 		return <>notfound</>;
 	}
+	useEffect(() => {
+		const listener = () => {
+			setOpenRP(false);
+		};
+		document.addEventListener("click", listener);
+		return () => document.removeEventListener("click", listener);
+	}, []);
 	const lineStyle: React.CSSProperties = { borderRight: "3px black solid", width: "15px", height: "50%" };
 	const author =
 		post.author.displayName === "" || post.author.displayName == null
 			? post.author.handle
 			: post.author.displayName;
+	const reply = () => {
+		if (isBlocked(post) || isNotFound(post)) return;
+		if (root) {
+			openNewPost({ reply: { parent: getPostRef(post), root: getPostRef(root) } });
+		} else {
+			openNewPost({ reply: { parent: getPostRef(post), root: getPostRef(post) } });
+		}
+	};
+	const openRP = (ev: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		document.dispatchEvent(new PointerEvent("click"));
+		ev.stopPropagation();
+		setOpenRP(true);
+	};
+	const RP = async () => {
+		if (postRP) {
+			if (postRP !== "temp") {
+				agent.deleteRepost(postRP);
+				setpostRP(undefined);
+			} else {
+				window.alert("wait a little");
+			}
+		} else {
+			setpostRP("temp");
+			const { uri } = await agent.repost(post.uri, post.cid);
+			setpostRP(uri);
+		}
+	};
+	const quote = () => {
+		openNewPost({ quote: { record: getPostRef(post) } });
+	};
 	return (
 		<>
 			<div style={{ position: "relative" }}>
@@ -58,8 +119,36 @@ export function PostView({
 								{(post.record as AppBskyFeedPost.Record).text}
 							</div>
 							<div style={{ display: "flex", width: "100%", justifyContent: "space-around" }}>
-								<span>💭</span>
-								<span>🔁</span>
+								<button type="button" onMouseUp={(ev) => ev.stopPropagation()} onClick={reply}>
+									💭
+								</button>
+								<span onMouseUp={(ev) => ev.stopPropagation()} style={{ position: "relative" }}>
+									<button type="button" onClick={openRP}>
+										{postRP ? "🔁" : "↻"}
+									</button>
+									{isopenRP && (
+										<div
+											style={{
+												position: "absolute",
+												width: "150px",
+												display: "flex",
+												flexDirection: "column",
+												zIndex: 10,
+											}}
+										>
+											<button
+												type="button"
+												onClick={RP}
+												style={{ width: "100%", textAlign: "left" }}
+											>
+												{postRP ? "リポストを取り消す" : "リポスト"}
+											</button>
+											<button type="button" onClick={quote}>
+												引用
+											</button>
+										</div>
+									)}
+								</span>
 								<span>❤</span>
 								<span>...</span>
 							</div>

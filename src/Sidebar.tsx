@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { openNewPost } from "./Newpost";
 
 const links: { text: string; src: string }[] = [
 	{ text: "icon", src: "/profile/example.bsky.social" },
@@ -22,6 +23,9 @@ export function Sidebar() {
 					</Link>
 				</div>
 			))}
+			<button type="button" onClick={() => openNewPost()}>
+				newpost
+			</button>
 		</div>
 	);
 }

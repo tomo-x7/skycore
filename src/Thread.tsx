@@ -1,7 +1,7 @@
 import { useLocation, useParams } from "react-router-dom";
 import type { AppBskyFeedDefs, Agent } from "@atproto/api";
 import { useEffect, useRef, useState } from "react";
-import type { params } from "./App";
+import { useDefaultParams, useUnitDefaultParams, type UnitDefaultParams } from "./App";
 import { PostView } from "./Post";
 
 type data =
@@ -11,6 +11,22 @@ type data =
 	| { type: "post"; data: AppBskyFeedDefs.PostView }
 	| { type: "error"; data: string }
 	| undefined;
+type postRecord = {
+	$type: "app.bsky.feed.post";
+	createdAt: string;
+	langs?: string[];
+	reply?: {
+		parent?: {
+			cid: string;
+			uri: string;
+		};
+		root?: {
+			cid: string;
+			uri: string;
+		};
+	};
+	text: string;
+};
 const isNotFound = (data: unknown): data is AppBskyFeedDefs.NotFoundPost => {
 	if (typeof data === "object" && data !== null && (data as AppBskyFeedDefs.NotFoundPost).notFound === true) {
 		return true;
@@ -75,7 +91,8 @@ const getPost = async (
 	}
 };
 
-export function Thread({ params }: { params: params }) {
+export function Thread() {
+	const params = useDefaultParams();
 	const { agent } = params;
 	const [data, setdata] = useState<data>();
 	const { user, rkey } = useParams();
@@ -88,10 +105,10 @@ export function Thread({ params }: { params: params }) {
 		getPost(agent, setdata, user, rkey);
 	}, [agent, user, rkey, post]);
 
-	return <ThreadView data={data} PostViewUnit={PostView} />;
+	return <ThreadView {...useUnitDefaultParams()} data={data} PostViewUnit={PostView} />;
 }
 
-function ThreadView({ data, PostViewUnit }: { data: data; PostViewUnit: typeof PostView }) {
+function ThreadView({ data, PostViewUnit }: { data: data; PostViewUnit: typeof PostView } & UnitDefaultParams) {
 	const treeTopref = useRef<HTMLSpanElement>(null);
 	const [bottomSpaceHeight, setbottomSpaceHeight] = useState(0);
 	useEffect(() => {
@@ -218,10 +235,15 @@ function ThreadView({ data, PostViewUnit }: { data: data; PostViewUnit: typeof P
 						isTree
 						hasReply
 						hasParent={i !== 0}
+						root={(data.data.post.record as postRecord).reply?.root}
 					/>
 				))}
 				<span ref={treeTopref}>
-					<PostViewUnit key={data.data.post.uri} post={data.data.post} />
+					<PostViewUnit
+						key={data.data.post.uri}
+						post={data.data.post}
+						root={(data.data.post.record as postRecord).reply?.root}
+					/>
 				</span>
 				{replies.map((replies) => (
 					<div key={(replies[0].uri as string) ?? (replies[0].post as { uri: string }).uri}>
@@ -233,6 +255,7 @@ function ThreadView({ data, PostViewUnit }: { data: data; PostViewUnit: typeof P
 								isTree
 								hasReply={i !== replies.length - 1}
 								hasParent
+								root={(data.data.post.record as postRecord).reply?.root}
 							/>
 						))}
 					</div>
