@@ -28,7 +28,7 @@
 			},
 			"correctness": { "noUnusedImports": "info" },
 			"suspicious": {
-				"noArrayIndexKey": "off"
+				"noArrayIndexKey": "off","noAssignInExpressions":"off"
 			},
 			"complexity": { "noUselessSwitchCase": "info", "noForEach": "off" }
 		}
