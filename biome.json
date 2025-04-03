@@ -1,9 +1,9 @@
 {
-	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
 	"files": {
-		"ignore": ["**/node_modules/**", "dist/**", "public/units/**"],
 		"include": ["*.*"]
 	},
+	"vcs": { "useIgnoreFile": true, "enabled": true, "clientKind": "git" },
 	"formatter": {
 		"enabled": true,
 		"indentStyle": "tab",
@@ -13,12 +13,25 @@
 	},
 	"linter": {
 		"rules": {
-			"a11y": { "useKeyWithClickEvents": "off" },
-			"style": { "noUselessElse": "off", "useImportType": "info" },
-			"correctness": { "noUnusedImports": "info" }
+			"a11y": {
+				"useKeyWithClickEvents": "off",
+				"useAltText": "off",
+				"noSvgWithoutTitle": "off",
+				"noRedundantAlt": "off"
+			},
+			"style": {
+				"noUselessElse": "off",
+				"useImportType": "info",
+				"useExportType": "info",
+				"noNonNullAssertion": "off",
+				"noParameterAssign": "off"
+			},
+			"correctness": { "noUnusedImports": "info" },
+			"suspicious": {
+				"noArrayIndexKey": "off"
+			},
+			"complexity": { "noUselessSwitchCase": "info", "noForEach": "off" }
 		}
 	},
-	"overrides": [
-		{ "include": ["tsconfig.*.json"], "json": { "parser": { "allowComments": true, "allowTrailingCommas": true } } }
-	]
+	"overrides": [{ "include": ["tsconfig.*"], "json": { "parser": { "allowComments": true } } }]
 }
