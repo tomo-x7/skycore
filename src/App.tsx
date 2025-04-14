@@ -14,6 +14,13 @@ import { About } from "./pages/about";
 import { Login } from "./pages/login";
 import { Providers } from "./providers";
 import toast from "react-hot-toast";
+import { useMediaQueries } from "./lib/hooks/device";
+import { BottomBar } from "./components/Bottombar";
+import { RightNav } from "./components/RightNav";
+import { LeftNav } from "./components/LeftNav";
+import { useDrawer } from "./components/Drawer";
+import { MainLayout } from "./components/Layout";
+import { Home } from "./pages/home";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -23,20 +30,24 @@ const router = createBrowserRouter(
 			<Route path="login" element={<Login />} />
 			{/* 認証がいるパス */}
 			<Route
-				loader={() => {
+				loader={async () => {
 					try {
 						const session = getCurrentSession();
-						if (session == null) return void (location.href = "/login");
-						return resumeSession(session);
+						if (session == null) return redirect("/login");
+						const data = await resumeSession(session);
+						toast.success(`signin as ${data.did}`);
+						return data;
 					} catch (e) {
 						console.error(e);
-						return void (location.href = "/login");
+						return redirect("/login");
 					}
 				}}
 				HydrateFallback={() => <>loading...</>}
 				element={<MainLayout />}
 			>
-				<Route index element={<>home</>} />
+				<Route index element={<Home />} />
+				<Route path=":user" element={<>user</>} />
+				<Route />
 			</Route>
 			{/* フォールバック */}
 			<Route path="*" element={<>not found</>} />
@@ -46,14 +57,4 @@ const router = createBrowserRouter(
 
 export function App() {
 	return <RouterProvider router={router} />;
-}
-
-function MainLayout() {
-	const session: CredentialSession = useLoaderData();
-	toast.success(`signin as ${session.did}`)
-	return (
-		<Providers session={session}>
-			<Outlet />
-		</Providers>
-	);
 }

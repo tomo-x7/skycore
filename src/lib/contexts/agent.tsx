@@ -3,6 +3,7 @@ import { type PropsWithChildren, createContext, useContext } from "react";
 import { useSession } from "./session";
 
 const context = createContext<Agent>(new Agent(""));
+/** **MUST USE IN SESSION PROVIDER** */
 export function AgentProvider({ children }: PropsWithChildren) {
 	const session = useSession();
 	const agent = new Agent(session);

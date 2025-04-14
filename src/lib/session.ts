@@ -35,7 +35,7 @@ export function saveSession(data: savedSessionData) {
 	const saved: savedSessionData[] =
 		listSavedSessions()
 			// 重複防止
-			?.filter((v) => v.main.did === data.main.did)
+			?.filter((v) => v.main.did !== data.main.did)
 			// isexpired削除
 			.map(({ main, avatar, serviceUrl }) => ({ main, avatar, serviceUrl })) ?? [];
 	saved.push(data);
