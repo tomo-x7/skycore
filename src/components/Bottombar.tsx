@@ -1,3 +1,3 @@
-export function BottomBar(){
-	return <></>
+export function BottomBar() {
+	return <></>;
 }

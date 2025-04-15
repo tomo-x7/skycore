@@ -1,26 +1,11 @@
-import type { CredentialSession } from "@atproto/api";
-import {
-	Outlet,
-	Route,
-	RouterProvider,
-	createBrowserRouter,
-	createRoutesFromElements,
-	redirect,
-	useLoaderData,
-} from "react-router-dom";
+import toast from "react-hot-toast";
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements, redirect } from "react-router-dom";
+import { MainLayout } from "./components/Layout";
 import { resumeSession } from "./lib/auth";
 import { getCurrentSession } from "./lib/session";
 import { About } from "./pages/about";
-import { Login } from "./pages/login";
-import { Providers } from "./providers";
-import toast from "react-hot-toast";
-import { useMediaQueries } from "./lib/hooks/device";
-import { BottomBar } from "./components/Bottombar";
-import { RightNav } from "./components/RightNav";
-import { LeftNav } from "./components/LeftNav";
-import { useDrawer } from "./components/Drawer";
-import { MainLayout } from "./components/Layout";
 import { Home } from "./pages/home";
+import { Login } from "./pages/login";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(

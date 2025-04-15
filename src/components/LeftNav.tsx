@@ -1,3 +1,3 @@
-export function LeftNav(){
-	return <>left navigation</>
+export function LeftNav() {
+	return <>left navigation</>;
 }

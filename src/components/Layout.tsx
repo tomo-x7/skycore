@@ -1,5 +1,5 @@
-import { CredentialSession } from "@atproto/api";
-import { useLoaderData, Outlet } from "react-router-dom";
+import type { CredentialSession } from "@atproto/api";
+import { Outlet, useLoaderData } from "react-router-dom";
 import { useMediaQueries } from "../lib/hooks/device";
 import { Providers } from "../providers";
 import { BottomBar } from "./Bottombar";

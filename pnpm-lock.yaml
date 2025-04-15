@@ -29,6 +29,9 @@ importers:
       react-icons:
         specifier: ^5.5.0
         version: 5.5.0(react@19.1.0)
+      react-minimal-pie-chart:
+        specifier: ^9.1.0
+        version: 9.1.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-modern-drawer:
         specifier: ^1.4.0
         version: 1.4.0(react@19.1.0)
@@ -771,6 +774,12 @@ packages:
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
+  react-minimal-pie-chart@9.1.0:
+    resolution: {integrity: sha512-JziZXZT0aw+9X+rGSpQwbSG7t3ypsyhzJNpiTUGfVeCqr70YIPbHE5Us3RsCsNRlVHbeLGrp/ibVuzUJT6Gcvw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
+      react-dom: ^16.8.0 || ^17 || ^18 || ^19
+
   react-modern-drawer@1.4.0:
     resolution: {integrity: sha512-5OkcUstqUdd/CNW9+BvLkzm36R2G54RFXWF2mWCH13cUsz5SNo9aB9KzPRbJp2LEVfRL/u+MgikOWRe7/6wKEQ==}
     peerDependencies:
@@ -828,6 +837,10 @@ packages:
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
+
+  svg-partial-circle@1.0.0:
+    resolution: {integrity: sha512-jDWgNzrlpsGo9A7/tdjCy6+1RzeeANYV1a3JtNYC/0ZXI3U+3VMucuNv7JuKti9VVBdyNxNO1CZs/k0xS1lUFA==}
+    engines: {node: '>=6'}
 
   tailwindcss@4.1.1:
     resolution: {integrity: sha512-QNbdmeS979Efzim2g/bEvfuh+fTcIdp1y7gA+sb6OYSW74rt7Cr7M78AKdf6HqWT3d5AiTb7SwTT3sLQxr4/qw==}
@@ -1508,6 +1521,12 @@ snapshots:
 
   react-is@16.13.1: {}
 
+  react-minimal-pie-chart@9.1.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+    dependencies:
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+      svg-partial-circle: 1.0.0
+
   react-modern-drawer@1.4.0(react@19.1.0):
     dependencies:
       react: 19.1.0
@@ -1575,6 +1594,8 @@ snapshots:
   shallow-equal@3.1.0: {}
 
   source-map-js@1.2.1: {}
+
+  svg-partial-circle@1.0.0: {}
 
   tailwindcss@4.1.1: {}
 

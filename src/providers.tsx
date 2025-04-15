@@ -1,10 +1,10 @@
 import type { CredentialSession } from "@atproto/api";
 import type { FC, PropsWithChildren, ReactNode } from "react";
-import { Toaster, ToastPosition } from "react-hot-toast";
-import { useMediaQueries } from "./lib/hooks/device";
-import { SessionProvider } from "./lib/contexts/session";
+import { type ToastPosition, Toaster } from "react-hot-toast";
 import { AgentProvider } from "./lib/contexts/agent";
 import { ProfileProvider } from "./lib/contexts/profile";
+import { SessionProvider } from "./lib/contexts/session";
+import { useMediaQueries } from "./lib/hooks/device";
 
 type Provider<T> = [FC<T & { children: ReactNode }>, T];
 function createProviders<T extends object[]>(...providers: { [K in keyof T]: Provider<T[K]> }) {

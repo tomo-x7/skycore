@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import DrawerLib from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
 
@@ -10,7 +10,7 @@ export function useDrawer(): [React.ReactNode, () => void] {
 function Drawer({ isopen, close }: { isopen: boolean; close: () => void }) {
 	return (
 		<>
-			<DrawerLib open={isopen} direction="left" onClose={close} >
+			<DrawerLib open={isopen} direction="left" onClose={close}>
 				hello
 			</DrawerLib>
 		</>

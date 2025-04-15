@@ -20,14 +20,14 @@ export async function resumeSession(data: savedSessionData) {
 	return session;
 }
 
-export const CHANGE_USER_KEY="change_user_handle"
-export function changeUser(targetDid:string,targetHandle?:string){
-	const targetSession=getSavedSession(targetDid)
-	if(targetSession==null||targetSession.isexpired){
-		sessionStorage.setItem(CHANGE_USER_KEY,targetHandle??targetDid)
-		location.href="/login"
-	}else{
-		setCurrentDid(targetDid)
-		location.href="/"
+export const CHANGE_USER_KEY = "change_user_handle";
+export function changeUser(targetDid: string, targetHandle?: string) {
+	const targetSession = getSavedSession(targetDid);
+	if (targetSession == null || targetSession.isexpired) {
+		sessionStorage.setItem(CHANGE_USER_KEY, targetHandle ?? targetDid);
+		location.href = "/login";
+	} else {
+		setCurrentDid(targetDid);
+		location.href = "/";
 	}
 }

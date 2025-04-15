@@ -15,10 +15,10 @@ export type SessionData = {
 export function getCurrentSession(): SessionData | null {
 	const did = getCurrentDid();
 	if (did == null) return null;
-	return getSavedSession(did)
+	return getSavedSession(did);
 }
 
-export function getSavedSession(did:string):SessionData|null{
+export function getSavedSession(did: string): SessionData | null {
 	const list = listSavedSessions();
 	if (list == null) return null;
 	return list.find((v) => v.main.did === did && !v.isexpired) ?? null;

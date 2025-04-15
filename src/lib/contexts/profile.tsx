@@ -1,5 +1,5 @@
-import { AppBskyActorProfile, AppBskyActorDefs } from "@atproto/api";
-import { createContext, PropsWithChildren, ReactNode, useContext, useEffect, useState } from "react";
+import type { AppBskyActorDefs } from "@atproto/api";
+import { type PropsWithChildren, createContext, useContext, useEffect, useState } from "react";
 import { useAgent } from "./agent";
 type Profile = Omit<AppBskyActorDefs.ProfileViewDetailed, "did" | "handle">;
 const Context = createContext<Profile>({});

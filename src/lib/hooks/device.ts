@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useMediaQuery,Context } from "react-responsive";
+import { useMediaQuery } from "react-responsive";
 export function useMediaQueries() {
 	const isDesktop = useMediaQuery({ minWidth: 1201 });
 	const isTablet = useMediaQuery({ minWidth: 701, maxWidth: 1200 });
