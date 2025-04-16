@@ -4,19 +4,42 @@ import { FaImage } from "react-icons/fa6";
 import { PieChart } from "react-minimal-pie-chart";
 import { useProfile } from "../lib/contexts/profile";
 
-export function NewPost({ post, initText = "" }: { post: (text: string) => Promise<void>; initText?: string }) {
+export function NewPost({
+	post,
+	initText = "",
+	close,
+}: { post: (text: string) => Promise<void>; initText?: string; close: () => void }) {
 	const [text, setText] = useState(initText);
 	const { avatar } = useProfile();
-	const handle = async () => {
+	const handlePost = async () => {
 		if (text.length < 1) return;
 		await post(text);
 		toast.success("投稿を公開しました");
 	};
 	return (
-		<div className="fixed inset-0 bg-black/80 flex justify-center items-center">
-			<div className="bg-white mobile:bg-black">
-				<img src={avatar} width={50} height={50} className="rounded-full" />
-				<Textarea value={text} onChange={(value) => setText(value)} />
+		<div className="fixed inset-0 bg-black/80 flex justify-center items-start">
+			<div className="bg-white mt-12.5 rounded-lg mobile:rounded-none">
+				<div className="flex justify-between px-2 h-13.5 items-center">
+					<button
+						type="button"
+						onClick={close}
+						className="text-blue-n py-1.75 px-2.25 font-bold bg-white [&:hover]:bg-blue-hover rounded-full text-sm"
+					>
+						キャンセル
+					</button>
+					<button
+						type="button"
+						onClick={handlePost}
+						className="bg-blue-n text-white disabled:bg-blue-d disabled:text-white/50 font-bold py-1.75 px-3.25 rounded-full text-sm flex"
+						disabled={text.length < 1}
+					>
+						投稿
+					</button>
+				</div>
+				<div className="flex items-start">
+					<img src={avatar} width={50} height={50} className="rounded-full " />
+					<Textarea value={text} onChange={(value) => setText(value)} />
+				</div>
 				<hr />
 				<div className="flex justify-between">
 					<div>

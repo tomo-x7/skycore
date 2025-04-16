@@ -1,2 +1,7 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
+@theme{
+	--color-blue-d:rgb(1,84,173);
+	--color-blue-n:rgb(1, 104, 213);
+	--color-blue-hover:rgb(204,229,255);
+}
