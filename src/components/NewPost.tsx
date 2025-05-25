@@ -1,47 +1,85 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { FaImage } from "react-icons/fa6";
 import { PieChart } from "react-minimal-pie-chart";
 import { useProfile } from "../lib/contexts/profile";
+import { Agent, Facet, RichText } from "@atproto/api";
+import { getRichTextView } from "../lib/richtext";
 
 export function NewPost({
 	post,
 	initText = "",
 	close,
-}: { post: (text: string) => Promise<void>; initText?: string; close: () => void }) {
+	detectFatet,
+}: {
+	post: (content: RichText) => Promise<void>;
+	detectFatet: (RichText: RichText) => Promise<void>;
+	initText?: string;
+	close: () => void;
+}) {
 	const [text, setText] = useState(initText);
 	const { avatar } = useProfile();
 	const handlePost = async () => {
 		if (text.length < 1) return;
-		await post(text);
+		const rt = new RichText({ text });
+		await detectFatet(rt);
+		await post(rt);
 		toast.success("投稿を公開しました");
 	};
+	const handleChange = (value: string) => {
+		setText(value);
+	};
 	return (
-		<div className="fixed inset-0 bg-black/80 flex justify-center items-start">
-			<div className="bg-white mt-12.5 rounded-lg mobile:rounded-none">
-				<div className="flex justify-between px-2 h-13.5 items-center">
+		<div
+			className="fixed flex justify-center"
+			style={{
+				inset: 0,
+				backgroundColor: "#0008",
+				alignItems: "start",
+			}}
+		>
+			<div style={{ backgroundColor: "white", marginTop: 50, borderRadius: 8 }}>
+				<div
+					className="flex items-center"
+					style={{ paddingLeft: 4, paddingRight: 4, justifyContent: "space-between", height: 50 }}
+				>
 					<button
 						type="button"
 						onClick={close}
-						className="text-blue-n py-1.75 px-2.25 font-bold bg-white [&:hover]:bg-blue-hover rounded-full text-sm"
+						style={{
+							color: "blue",
+							padding: "7px 9px",
+							fontWeight: "bold",
+							borderRadius: 999,
+							fontSize: 12,
+							backgroundColor: "white",
+						}}
 					>
 						キャンセル
 					</button>
 					<button
 						type="button"
 						onClick={handlePost}
-						className="bg-blue-n text-white disabled:bg-blue-d disabled:text-white/50 font-bold py-1.75 px-3.25 rounded-full text-sm flex"
+						className="flex"
+						style={{
+							color: "white",
+							backgroundColor: "blue",
+							padding: "7px 9px",
+							borderRadius: 999,
+							fontWeight: "bold",
+							fontSize: 12,
+						}}
 						disabled={text.length < 1}
 					>
 						投稿
 					</button>
 				</div>
 				<div className="flex items-start">
-					<img src={avatar} width={50} height={50} className="rounded-full " />
-					<Textarea value={text} onChange={(value) => setText(value)} />
+					<img src={avatar} width={50} height={50} style={{ borderRadius: 999 }} />
+					<Textarea value={text} onChange={handleChange} />
 				</div>
 				<hr />
-				<div className="flex justify-between">
+				<div className="flex" style={{ justifyContent: "space-between" }}>
 					<div>
 						<button type="button">
 							<FaImage />
@@ -58,22 +96,56 @@ export function NewPost({
 }
 
 function Textarea({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+	const rtView = useMemo(() => getRichTextView(value), [value]);
+	const textEl=rtView.map(({ s, blue }, i) => (
+		<span key={i + s} style={{ color: blue ? "blue" : "black" }}>
+			{s}
+		</span>
+	));
 	return (
-		<div className="w-[500px] max-h-[calc(90dvh-100px)] min-h-[140px] overflow-y-auto p-3">
-			<div className="relative">
-				<div
-					className="overflow-hidden whitespace-pre-wrap wrap-break-word"
-					style={{ color: value ? "black" : "gray" }}
-					aria-hidden="true"
-				>
-					{value || "最近どう？"}
-					{"\u200b"}
-				</div>
+		<div style={{ width: 500, maxHeight: "calc(90dvh-100px)", minHeight: 140, overflowY: "auto", padding: 12 }}>
+			<div className="relative" style={{ height: "100%" }}>
 				<textarea
-					className="absolute left-0 top-0 w-full h-full resize-none outline-0 text-transparent caret-black"
+					className="absolute"
+					onClick={(e) => e.stopPropagation()}
+					style={{
+						left: 0,
+						top: 0,
+						width: "100%",
+						height: "100%",
+						resize: "none",
+						outline: 0,
+						caret: "black",
+						fontSize: 16,
+						border: 0,
+						padding: 0,
+						margin: 0,
+						background: "none",
+						color: "transparent",
+						caretColor: "black",
+						lineHeight: 1.2,
+					}}
 					value={value}
 					onChange={(ev) => onChange(ev.target.value)}
 				/>
+				<div
+					style={{
+						color: value ? "black" : "gray",
+						overflow: "hidden",
+						whiteSpace: "pre-wrap",
+						wordWrap: "break-word",
+						fontSize: 16,
+						padding: 0,
+						margin: 0,
+						cursor: "none",
+						zIndex: 1,
+						lineHeight: 1.2,
+					}}
+					aria-hidden="true"
+				>
+					{textEl || "最近どう？"}
+					{"\u200b"}
+				</div>
 			</div>
 		</div>
 	);
@@ -83,7 +155,7 @@ function TextCountChart({ text }: { text: string }) {
 	const isOverflow = text.length > 300;
 	return (
 		<PieChart
-			className="w-[30px]"
+			style={{ width: 30 }}
 			lineWidth={30}
 			startAngle={-90}
 			data={[

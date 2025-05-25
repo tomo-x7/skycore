@@ -1,0 +1,28 @@
+.flex {
+	display: flex;
+}
+.block {
+	display: block;
+}
+.absolute {
+	position: absolute;
+}
+.relative {
+	position: relative;
+}
+.fixed {
+	position: fixed;
+}
+.justify-center {
+	justify-content: center;
+}
+.items-center {
+	align-items: center;
+}
+
+* {
+	font-family: "Inter", Arial, sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
+}

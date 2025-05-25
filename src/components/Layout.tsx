@@ -16,9 +16,9 @@ function DesktopLayout() {
 	const { isDesktop } = useMediaQueries();
 	return (
 		<>
-			<div className="flex">
+			<div style={{ display: "flex" }}>
 				<LeftNav />
-				<div className="w-[600px]">
+				<div style={{ width: 600 }}>
 					<Outlet />
 				</div>
 				{isDesktop && <RightNav />}
