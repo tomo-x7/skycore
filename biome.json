@@ -29,7 +29,8 @@
 			"correctness": { "noUnusedImports": "info" },
 			"suspicious": {
 				"noArrayIndexKey": "off",
-				"noAssignInExpressions": "off"
+				"noAssignInExpressions": "off",
+				"noExplicitAny": "off"
 			},
 			"complexity": { "noUselessSwitchCase": "info", "noForEach": "off" }
 		}

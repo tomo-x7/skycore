@@ -22,5 +22,5 @@ export function getRichTextView(text: string) {
 			return p;
 		}, [])
 		.map((v) => ({ s: decoder.decode(new Uint8Array(v.s)), blue: v.blue }));
-	return view
+	return view;
 }

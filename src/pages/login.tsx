@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CHANGE_USER_KEY, signIn } from "../lib/auth";
+import { CHANGE_USER_KEY, signIn } from "../fetcher/auth";
 
 export function Login() {
 	const [serviceUrl, setServiceUrl] = useState("https://bsky.social");

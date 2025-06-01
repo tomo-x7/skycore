@@ -1,8 +1,8 @@
 import toast from "react-hot-toast";
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements, redirect } from "react-router-dom";
 import { MainLayout } from "./components/Layout";
-import { resumeSession } from "./lib/auth";
-import { getCurrentSession } from "./lib/session";
+import { resumeSession } from "./fetcher/auth";
+import { getCurrentSession } from "./fetcher/session";
 import { About } from "./pages/about";
 import { Home } from "./pages/home";
 import { Login } from "./pages/login";

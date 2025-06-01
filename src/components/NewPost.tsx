@@ -1,9 +1,9 @@
+import { RichText } from "@atproto/api";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { FaImage } from "react-icons/fa6";
 import { PieChart } from "react-minimal-pie-chart";
 import { useProfile } from "../lib/contexts/profile";
-import { Agent, Facet, RichText } from "@atproto/api";
 import { getRichTextView } from "../lib/richtext";
 
 export function NewPost({
@@ -97,7 +97,7 @@ export function NewPost({
 
 function Textarea({ value, onChange }: { value: string; onChange: (value: string) => void }) {
 	const rtView = useMemo(() => getRichTextView(value), [value]);
-	const textEl=rtView.map(({ s, blue }, i) => (
+	const textEl = rtView.map(({ s, blue }, i) => (
 		<span key={i + s} style={{ color: blue ? "blue" : "black" }}>
 			{s}
 		</span>
