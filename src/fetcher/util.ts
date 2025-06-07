@@ -1,27 +1,37 @@
-import type { GetMethod, Result, ResultPromise } from "./types";
-
-function isXRPCResponse(response: any): response is { success: boolean; headers: unknown; data: any } {
-	return true;
-}
+import type { CacheGetMethod, NoCacheGetMethod, Result, ResultPromise } from "./types";
+import { XRPCResponse } from "@atproto/xrpc";
 
 /**
  * @param func throwable
  * @returns non-throwable
  */
-function wrapFunction<Func extends (...args: any[]) => unknown>(
+export function wrapFunction<Func extends (...args: any[]) => any>(
 	func: Func,
 ): (...args: Parameters<Func>) => Promise<Result<Awaited<ReturnType<Func>>>> {
 	return async (...args) => {
 		try {
 			const response = await func(...args);
-			if (isXRPCResponse(response)) {
-				if (response.success) {
-					return { ok: true, data: response.data };
-				} else {
-					return { ok: false, error: JSON.stringify(response) };
-				}
-			}
 			return { ok: true, data: response };
+		} catch (error) {
+			return { ok: false, error: String(error) };
+		}
+	};
+}
+/**
+ * @param func throwable xrpc
+ * @returns non-throwable
+ */
+export function wrapXRPCFunction<Func extends (...args: any[]) => Promise<XRPCResponse>|XRPCResponse>(
+	func: Func,
+): (...args: Parameters<Func>) => Promise<Result<Awaited<ReturnType<Func>>>> {
+	return async (...args) => {
+		try {
+			const response = await func(...args);
+			if (response.success) {
+				return { ok: true, data: response.data };
+			} else {
+				return { ok: false, error: JSON.stringify(response) };
+			}
 		} catch (error) {
 			return { ok: false, error: String(error) };
 		}
@@ -32,18 +42,38 @@ function wrapFunction<Func extends (...args: any[]) => unknown>(
  * @param func throwable
  * @param cacheTimeSec キャッシュの有効期限を秒で指定
  */
-export function createGet<Func extends (...args: any[]) => unknown>(func: Func, cacheTimeSec: number): GetMethod<Func> {
+export function createCacheGetter<Func extends (...args: any[]) => any>(
+	func: Func,
+	cacheTimeSec: number,
+): CacheGetMethod<Func> {
 	const wrappedFunc = wrapFunction(func);
-	const promiseMap = new Map<string, ResultPromise<Func>>();
-	const cacheMap = new Map<string, { data: Awaited<ResultPromise<Func>>; time: number }>();
+	return createCacheGetterInner(wrappedFunc, cacheTimeSec);
+}
+/**
+ * @param func throwable xrpc
+ * @param cacheTimeSec キャッシュの有効期限を秒で指定
+ */
+export function createCacheXRPCGetter<Func extends (...args: any[]) => Promise<XRPCResponse>|XRPCResponse>(
+	func: Func,
+	cacheTimeSec: number,
+): CacheGetMethod<Func> {
+	const wrappedFunc = wrapXRPCFunction(func);
+	return createCacheGetterInner(wrappedFunc, cacheTimeSec);
+}
+
+function createCacheGetterInner<Func extends (...args: any[]) => any>(
+	wrappedFunc: (...args: Parameters<Func>) => Promise<Result<Awaited<ReturnType<Func>>>>,
+	cacheTimeSec: number,
+): CacheGetMethod<Func> {
+	const cacheMap = new Map<string, { promise: ResultPromise<Func>; time: number }>();
 	const refreshCache = () => {
 		if (requestIdleCallback != null) {
-			requestIdleCallback(checkCacheInner);
+			requestIdleCallback(refreshCacheInner);
 		} else {
-			setTimeout(checkCacheInner, 0);
+			setTimeout(refreshCacheInner, 0);
 		}
 	};
-	const checkCacheInner = () => {
+	const refreshCacheInner = () => {
 		const expiredKeys: string[] = [];
 		let i = 0;
 		for (const [key, value] of cacheMap.entries()) {
@@ -60,38 +90,54 @@ export function createGet<Func extends (...args: any[]) => unknown>(func: Func, 
 	return async (useCache, ...args) => {
 		const key = JSON.stringify(args);
 		const cached = cacheMap.get(key);
-		const cachedPromise = promiseMap.get(key);
 		refreshCache();
 		if (useCache && cached != null) {
-			if (cached.time + cacheTimeSec * 1000 > Date.now()) return cached.data;
+			if (cached.time + cacheTimeSec * 1000 > Date.now()) return await cached.promise;
 			cacheMap.delete(key);
-		} else if (useCache && cachedPromise != null) {
-			return await cachedPromise;
 		}
-		const promise = wrappedFunc(...args).finally(() => promiseMap.delete(key));
-		promiseMap.set(key, promise);
+		const promise = wrappedFunc(...args);
+		cacheMap.set(key, { promise, time: Date.now() });
 		const data = await promise;
-		if (data.ok) {
-			cacheMap.set(key, { data, time: Date.now() });
-		} else {
+		if (!data.ok) {
 			cacheMap.delete(key);
 		}
 		return data;
 	};
 }
-const get = createGet((a: string, b: number) => {
-	return a + b;
-}, 10);
 
-// /**
-//  * @param func non-throwable
-//  */
-// export function createPost<Params extends ParamsType, Result>(
-// 	func: (params: Params) => Promise<Result>,
-// ): PostMethod<Params, Result> {
-// 	return {
-// 		emit: (params) => {
-// 			return func(params);
-// 		},
-// 	};
-// }
+/**
+ * @param func throwable
+ * 瞬間的な二重fetchのみ防ぐ
+ */
+export function createNoCacheGetter<Func extends (...args: any[]) => any>(func: Func): NoCacheGetMethod<Func> {
+	const wrappedFunc = wrapFunction(func);
+	return createNoCacheGetterInner(wrappedFunc);
+}
+/**
+ * @param func throwable xrpc
+ * 瞬間的な二重fetchのみ防ぐ
+ */
+export function createNoCacheXRPCGetter<Func extends (...args: any[]) => Promise<XRPCResponse>|XRPCResponse>(func: Func): NoCacheGetMethod<Func> {
+	const wrappedFunc = wrapXRPCFunction(func);
+	return createNoCacheGetterInner(wrappedFunc);
+}
+function createNoCacheGetterInner<Func extends (...args: any[]) => any>(
+	wrappedFunc: (...args: Parameters<Func>) => Promise<Result<Awaited<ReturnType<Func>>>>,
+): NoCacheGetMethod<Func> {
+	let lastKey: string | null = null;
+	let lastPromise: ResultPromise<Func> | null = null;
+	return async (...args) => {
+		const key = JSON.stringify(args);
+		if (key === lastKey && lastPromise != null) {
+			return await lastPromise;
+		}
+		const promise = wrappedFunc(...args);
+		lastKey = key;
+		lastPromise = promise;
+		setTimeout(() => {
+			lastKey = null;
+			lastPromise = null;
+		}, 300);
+		return await promise;
+	};
+}

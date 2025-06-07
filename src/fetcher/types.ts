@@ -1,11 +1,13 @@
+import { XRPCResponse } from "@atproto/xrpc";
+
 export type Result<Response> =
-	| { ok: true; data: Response extends { success: boolean; headers: unknown; data: infer Data } ? Data : Response }
+	| { ok: true; data: Response extends XRPCResponse ? Response["data"] : Response }
 	| { ok: false; error: string };
 
 export type ParamsType = Record<string | number, unknown> | undefined;
-export type GetMethod<Function extends (...args: any[]) => unknown> = (
-	useCache?: boolean,
-	...params: Parameters<Function>
-) => Promise<Result<Awaited<ReturnType<Function>>>>;
-export type PostMethod<Params extends ParamsType, Response> = (params: Params) => Promise<Result<Awaited<Response>>>;
-export type ResultPromise<Func extends (...args: any[]) => unknown> = ReturnType<GetMethod<Func>>;
+type Function = (...args: any[]) => any;
+export type ResultPromise<F extends Function> = Promise<Result<Awaited<ReturnType<F>>>>;
+
+export type NoCacheGetMethod<F extends Function> = (...params: Parameters<F>) => ResultPromise<F>;
+export type CacheGetMethod<F extends Function> = (useCache?: boolean, ...params: Parameters<F>) => ResultPromise<F>;
+export type PostMethod<F extends Function> = (...params: Parameters<F>) => ResultPromise<F>;

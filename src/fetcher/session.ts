@@ -1,5 +1,6 @@
 import type { AtpSessionData } from "@atproto/api";
 import { jwtDecode } from "jwt-decode";
+import { logger } from "./logger";
 
 const CURRENT_DID_KEY = "current";
 const SESSIONS_KEY = "sessions";
@@ -31,6 +32,11 @@ export function listSavedSessions(): SessionData[] | null {
 	return data.map((v) => ({ ...v, isexpired: isSessionExpired(v.main) }));
 }
 
+export function deleteAllSessions(){
+	localStorage.removeItem(SESSIONS_KEY);
+	localStorage.removeItem(CURRENT_DID_KEY);
+}
+
 export function saveSession(data: savedSessionData) {
 	const saved: savedSessionData[] =
 		listSavedSessions()
@@ -60,7 +66,7 @@ export function isSessionExpired(session: AtpSessionData) {
 			}
 		}
 	} catch (e) {
-		console.error("Could not decode JWT");
+		logger.error("Could not decode JWT");
 	}
 	return true;
 }

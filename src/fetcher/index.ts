@@ -1,29 +1,49 @@
 import { Agent } from "@atproto/api";
-import { resumeSession } from "./auth";
-import { getCurrentSession } from "./session";
-import type { GetMethod } from "./types";
+import { CHANGE_USER_KEY, resumeSession } from "./auth";
+import { getCurrentSession, getSavedSession, listSavedSessions, SessionData, setCurrentDid } from "./session";
+import type { CacheGetMethod, NoCacheGetMethod } from "./types";
+import { createCacheXRPCGetter, createNoCacheXRPCGetter } from "./util";
 
-interface Fetcher {
-	getTimeline: GetMethod<Agent["getTimeline"]>;
+export interface Fetcher {
+	getTimeline: NoCacheGetMethod<Agent["getTimeline"]>;
+	getProfile: CacheGetMethod<Agent["getProfile"]>;
+	getProfiles: CacheGetMethod<Agent["getProfiles"]>;
+	sessionManager: SessionManager;
 }
+interface SessionManager {
+	listSavedSessions: () => SessionData[] | null;
+	changeUser: (did: string) => void;
+	signOutAll: () => void;
+}
+const sessionManager: SessionManager = {
+	listSavedSessions: () => {
+		return listSavedSessions();
+	},
+	changeUser: (did) => {
+		setCurrentDid(did);
+		if (getSavedSession(did)?.isexpired === false) {
+			location.reload();
+		}
+		location.href = "/login";
+	},
+	signOutAll: () => {
+		location.href = "/login";
+	},
+};
 export async function createFetcher() {
 	const sessionData = getCurrentSession();
 	if (sessionData == null) return null;
 	const session = await resumeSession(sessionData);
 	const agent = new Agent(session);
+	// 読み込み時に実行されることを期待してここに書いておく
+	// 誤作動防止処置
+	sessionStorage.removeItem(CHANGE_USER_KEY);
 
 	const fetcher: Fetcher = {
-		getTimeline: async (useCache, params, opts) => {
-			try {
-				const res = await agent.getTimeline(params, opts);
-				if (res.success) {
-					return { ok: true, data: res.data };
-				} else {
-					return { ok: false, error: JSON.stringify(res) };
-				}
-			} catch (error) {
-				return { ok: false, error: String(error) };
-			}
-		},
+		sessionManager,
+		getTimeline: createNoCacheXRPCGetter(agent.getTimeline),
+		getProfile: createCacheXRPCGetter(agent.getProfile, 60 * 5),
+		getProfiles: createCacheXRPCGetter(agent.getProfiles, 60 * 5),
 	};
+	return fetcher;
 }
