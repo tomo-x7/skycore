@@ -1,6 +1,6 @@
 import { Agent } from "@atproto/api";
 import { CHANGE_USER_KEY, resumeSession } from "./auth";
-import { getCurrentSession, getSavedSession, listSavedSessions, SessionData, setCurrentDid } from "./session";
+import { type SessionData, getCurrentSession, getSavedSession, listSavedSessions, setCurrentDid } from "./session";
 import type { CacheGetMethod, NoCacheGetMethod } from "./types";
 import { createCacheXRPCGetter, createNoCacheXRPCGetter } from "./util";
 
@@ -9,6 +9,8 @@ export interface Fetcher {
 	getProfile: CacheGetMethod<Agent["getProfile"]>;
 	getProfiles: CacheGetMethod<Agent["getProfiles"]>;
 	sessionManager: SessionManager;
+	rawAgent: Agent;
+	did: string;
 }
 interface SessionManager {
 	listSavedSessions: () => SessionData[] | null;
@@ -34,6 +36,7 @@ export async function createFetcher() {
 	const sessionData = getCurrentSession();
 	if (sessionData == null) return null;
 	const session = await resumeSession(sessionData);
+	if (session == null) return null;
 	const agent = new Agent(session);
 	// 読み込み時に実行されることを期待してここに書いておく
 	// 誤作動防止処置
@@ -41,6 +44,8 @@ export async function createFetcher() {
 
 	const fetcher: Fetcher = {
 		sessionManager,
+		rawAgent: agent,
+		did: agent.assertDid,
 		getTimeline: createNoCacheXRPCGetter(agent.getTimeline),
 		getProfile: createCacheXRPCGetter(agent.getProfile, 60 * 5),
 		getProfiles: createCacheXRPCGetter(agent.getProfiles, 60 * 5),

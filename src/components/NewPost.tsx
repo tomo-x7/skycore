@@ -1,31 +1,79 @@
-import { RichText } from "@atproto/api";
+import { AppBskyFeedPost, RichText } from "@atproto/api";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { FaImage } from "react-icons/fa6";
 import { PieChart } from "react-minimal-pie-chart";
 import { useProfile } from "../lib/contexts/profile";
 import { getRichTextView } from "../lib/richtext";
+import { logger } from "../fetcher/logger";
+import { SelfLabel } from "@atproto/api/dist/client/types/com/atproto/label/defs";
 
-export function NewPost({
+type PostFunc = (params: {
+	content: RichText;
+	embed?: AppBskyFeedPost.Record["embed"];
+	reply?: AppBskyFeedPost.Record["reply"];
+	langs?: string[];
+	labels?: SelfLabel[];
+}) => Promise<{ ok: true } | { ok: false; error: string }>;
+
+export function NewPost({ close, initText }: { close: () => void; initText?: string }) {
+	const post: PostFunc = async ({ content, embed, reply, langs, labels }) => {
+		try {
+			await content.detectFacets(fetcher.rawAgent);
+			await fetcher.rawAgent.post({
+				$type: "app.bsky.feed.post",
+				facets: content.facets,
+				text: content.text,
+				embed,
+				reply,
+				langs,
+				labels: labels == null ? undefined : { $type: "com.atproto.label.defs#selfLabels", values: labels },
+			});
+			return { ok: true };
+		} catch (e) {
+			logger.error(`Failed to post: ${String(e)}`);
+			return { ok: false, error: String(e) };
+		}
+	};
+	return <>{<NewPostView post={post} initText={initText} close={close} />}</>;
+}
+
+export function NewPostView({
 	post,
 	initText = "",
 	close,
-	detectFatet,
 }: {
-	post: (content: RichText) => Promise<void>;
-	detectFatet: (RichText: RichText) => Promise<void>;
+	post: PostFunc;
 	initText?: string;
 	close: () => void;
 }) {
 	const [text, setText] = useState(initText);
+	const [error, setError] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(false);
 	const { avatar } = useProfile();
 	const handlePost = async () => {
-		if (text.length < 1) return;
-		const rt = new RichText({ text });
-		await detectFatet(rt);
-		await post(rt);
-		toast.success("投稿を公開しました");
+		if (loading) return;
+		try {
+			if (text.length < 1) return;
+			if (text.length > 300) return;
+			setError(false);
+			setLoading(true);
+			const rt = new RichText({ text });
+			const res = await post({ content: rt });
+			if (!res.ok) {
+				setError(true);
+				return;
+			}
+			toast.success("投稿しました");
+			close();
+		} catch (e) {
+			console.error("Failed to post:", e);
+			setError(true);
+		} finally {
+			setLoading(false);
+		}
 	};
+
 	const handleChange = (value: string) => {
 		setText(value);
 	};
@@ -41,7 +89,7 @@ export function NewPost({
 			<div style={{ backgroundColor: "white", marginTop: 50, borderRadius: 8 }}>
 				<div
 					className="flex items-center"
-					style={{ paddingLeft: 4, paddingRight: 4, justifyContent: "space-between", height: 50 }}
+					style={{ paddingLeft: 4, paddingRight: 4, justifyContent: "space-between", height: 50, gap: 20 }}
 				>
 					<button
 						type="button"
@@ -52,11 +100,14 @@ export function NewPost({
 							fontWeight: "bold",
 							borderRadius: 999,
 							fontSize: 12,
-							backgroundColor: "white",
+							backgroundColor: "white",border: 0,
 						}}
 					>
 						キャンセル
 					</button>
+					<div style={{ flexGrow: 1, textAlign: "right", color: "red" }}>
+						{error && "エラーが発生しました"}
+					</div>
 					<button
 						type="button"
 						onClick={handlePost}
@@ -68,10 +119,11 @@ export function NewPost({
 							borderRadius: 999,
 							fontWeight: "bold",
 							fontSize: 12,
+							border: 0,
 						}}
-						disabled={text.length < 1}
+						disabled={text.length < 1 || loading}
 					>
-						投稿
+						{loading ? "" : "投稿"}
 					</button>
 				</div>
 				<div className="flex items-start">

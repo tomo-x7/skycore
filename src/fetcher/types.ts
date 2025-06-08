@@ -1,4 +1,4 @@
-import { XRPCResponse } from "@atproto/xrpc";
+import type { XRPCResponse } from "@atproto/xrpc";
 
 export type Result<Response> =
 	| { ok: true; data: Response extends XRPCResponse ? Response["data"] : Response }

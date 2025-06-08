@@ -10,8 +10,8 @@ export function Login() {
 		const handle = sessionStorage.getItem(CHANGE_USER_KEY);
 		if (handle != null) {
 			setIdentifier(handle);
-			sessionStorage.removeItem(CHANGE_USER_KEY);
 		}
+		sessionStorage.removeItem(CHANGE_USER_KEY);
 	}, []);
 	const handleLogin = async () => {
 		if (!URL.canParse(serviceUrl)) return setError("cannot parse url");

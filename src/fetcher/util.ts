@@ -1,5 +1,5 @@
+import type { XRPCResponse } from "@atproto/xrpc";
 import type { CacheGetMethod, NoCacheGetMethod, Result, ResultPromise } from "./types";
-import { XRPCResponse } from "@atproto/xrpc";
 
 /**
  * @param func throwable
@@ -21,7 +21,7 @@ export function wrapFunction<Func extends (...args: any[]) => any>(
  * @param func throwable xrpc
  * @returns non-throwable
  */
-export function wrapXRPCFunction<Func extends (...args: any[]) => Promise<XRPCResponse>|XRPCResponse>(
+export function wrapXRPCFunction<Func extends (...args: any[]) => Promise<XRPCResponse> | XRPCResponse>(
 	func: Func,
 ): (...args: Parameters<Func>) => Promise<Result<Awaited<ReturnType<Func>>>> {
 	return async (...args) => {
@@ -53,7 +53,7 @@ export function createCacheGetter<Func extends (...args: any[]) => any>(
  * @param func throwable xrpc
  * @param cacheTimeSec キャッシュの有効期限を秒で指定
  */
-export function createCacheXRPCGetter<Func extends (...args: any[]) => Promise<XRPCResponse>|XRPCResponse>(
+export function createCacheXRPCGetter<Func extends (...args: any[]) => Promise<XRPCResponse> | XRPCResponse>(
 	func: Func,
 	cacheTimeSec: number,
 ): CacheGetMethod<Func> {
@@ -117,7 +117,9 @@ export function createNoCacheGetter<Func extends (...args: any[]) => any>(func: 
  * @param func throwable xrpc
  * 瞬間的な二重fetchのみ防ぐ
  */
-export function createNoCacheXRPCGetter<Func extends (...args: any[]) => Promise<XRPCResponse>|XRPCResponse>(func: Func): NoCacheGetMethod<Func> {
+export function createNoCacheXRPCGetter<Func extends (...args: any[]) => Promise<XRPCResponse> | XRPCResponse>(
+	func: Func,
+): NoCacheGetMethod<Func> {
 	const wrappedFunc = wrapXRPCFunction(func);
 	return createNoCacheGetterInner(wrappedFunc);
 }

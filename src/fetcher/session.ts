@@ -32,7 +32,7 @@ export function listSavedSessions(): SessionData[] | null {
 	return data.map((v) => ({ ...v, isexpired: isSessionExpired(v.main) }));
 }
 
-export function deleteAllSessions(){
+export function deleteAllSessions() {
 	localStorage.removeItem(SESSIONS_KEY);
 	localStorage.removeItem(CURRENT_DID_KEY);
 }

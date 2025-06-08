@@ -8,9 +8,8 @@ import { LeftNav } from "./LeftNav";
 import { RightNav } from "./RightNav";
 
 export function MainLayout() {
-	const session: CredentialSession = useLoaderData();
 	const { isMobile } = useMediaQueries();
-	return <Providers session={session}>{isMobile ? <MobileLayout /> : <DesktopLayout />}</Providers>;
+	return <Providers>{isMobile ? <MobileLayout /> : <DesktopLayout />}</Providers>;
 }
 function DesktopLayout() {
 	const { isDesktop } = useMediaQueries();

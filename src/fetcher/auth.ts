@@ -1,5 +1,6 @@
 import { Agent, CredentialSession } from "@atproto/api";
 import { getSavedSession, saveSession, type savedSessionData, setCurrentDid } from "./session";
+import { logger } from "./logger";
 
 export async function signIn(serviceUrl: URL, identifier: string, password: string) {
 	const session = new CredentialSession(serviceUrl);
@@ -16,8 +17,13 @@ async function getAvatar(actor: string) {
 
 export async function resumeSession(data: savedSessionData) {
 	const session = new CredentialSession(new URL(data.serviceUrl));
-	await session.resumeSession(data.main);
-	return session;
+	try {
+		await session.resumeSession(data.main);
+		return session;
+	} catch (e) {
+		logger.error(`Failed to resume session:${String(e)}`);
+		return null;
+	}
 }
 
 export const CHANGE_USER_KEY = "change_user_handle";

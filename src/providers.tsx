@@ -1,9 +1,7 @@
 import type { CredentialSession } from "@atproto/api";
 import type { FC, PropsWithChildren, ReactNode } from "react";
 import { type ToastPosition, Toaster } from "react-hot-toast";
-import { AgentProvider } from "./lib/contexts/agent";
 import { ProfileProvider } from "./lib/contexts/profile";
-import { SessionProvider } from "./lib/contexts/session";
 import { useMediaQueries } from "./lib/hooks/device";
 
 type Provider<T> = [FC<T & { children: ReactNode }>, T];
@@ -21,10 +19,10 @@ function reduce<T extends object[]>(
 	return providersArr.reduceRight(reducer, init);
 }
 
-export function Providers({ children, session }: PropsWithChildren<{ session: CredentialSession }>) {
+export function Providers({ children }: PropsWithChildren<Record<string, unknown>>) {
 	const { isMobile } = useMediaQueries();
 	const toastPosition = (isMobile ? "bottom-center" : "bottom-left") satisfies ToastPosition;
-	const providersArr = createProviders([SessionProvider, { session }], [AgentProvider, {}], [ProfileProvider, {}]);
+	const providersArr = createProviders([ProfileProvider, {}]);
 	return (
 		<>
 			{reduce(providersArr, mapProvider, children)}

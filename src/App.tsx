@@ -3,36 +3,14 @@ import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements, r
 import { MainLayout } from "./components/Layout";
 import { resumeSession } from "./fetcher/auth";
 import { getCurrentSession } from "./fetcher/session";
-import { About } from "./pages/about";
 import { Home } from "./pages/home";
-import { Login } from "./pages/login";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<>
-			{/* 認証不要のパス */}
-			<Route path="about" element={<About />} />
-			<Route path="login" element={<Login />} />
-			{/* 認証がいるパス */}
-			<Route
-				loader={async () => {
-					try {
-						const session = getCurrentSession();
-						if (session == null) return redirect("/login");
-						const data = await resumeSession(session);
-						toast.success(`signin as ${data.did}`);
-						return data;
-					} catch (e) {
-						console.error(e);
-						return redirect("/login");
-					}
-				}}
-				HydrateFallback={() => <>loading...</>}
-				element={<MainLayout />}
-			>
+			<Route element={<MainLayout />}>
 				<Route index element={<Home />} />
 				<Route path=":user" element={<>user</>} />
-				<Route />
 			</Route>
 			{/* フォールバック */}
 			<Route path="*" element={<>not found</>} />
