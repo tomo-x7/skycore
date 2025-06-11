@@ -10,7 +10,12 @@ const router = createBrowserRouter(
 		<>
 			<Route element={<MainLayout />}>
 				<Route index element={<Home />} />
-				<Route path=":user" element={<>user</>} />
+				<Route path="/search" element={<>search</>} />
+				<Route path="/messages" element={<>messages</>} />
+				<Route path="/notifications" element={<>notifications</>} />
+				<Route path="/feeds" element={<>feeds</>} />
+				<Route path="/lists" element={<>lists</>} />
+				<Route path="/profile/:user" element={<>user</>} />
 			</Route>
 			{/* フォールバック */}
 			<Route path="*" element={<>not found</>} />

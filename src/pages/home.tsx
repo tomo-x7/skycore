@@ -1,5 +1,5 @@
 import { NewPostView } from "../components/NewPost";
-import { MobileNewPostButton } from "../components/NewPostButton";
+import { MobileNewPostButton } from "../components/MobileNewPostButton";
 
 export function Home() {
 	return (
