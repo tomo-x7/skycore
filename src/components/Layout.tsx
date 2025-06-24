@@ -3,7 +3,7 @@ import { Outlet, useLoaderData } from "react-router-dom";
 import { useMediaQueries } from "../lib/hooks/device";
 import { Providers } from "../providers";
 import { BottomBar } from "./Bottombar";
-import { useDrawer } from "./Drawer";
+import { Drawer } from "./Drawer";
 import { LeftNav } from "./LeftNav";
 import { RightNav } from "./RightNav";
 
@@ -26,13 +26,9 @@ function DesktopLayout() {
 	);
 }
 function MobileLayout() {
-	const [Drawer, open] = useDrawer();
 	return (
 		<>
-			<button type="button" onClick={open}>
-				open
-			</button>
-			{Drawer}
+			<Drawer />
 			<Outlet />
 			<BottomBar />
 		</>
