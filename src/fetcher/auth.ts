@@ -1,6 +1,6 @@
 import { Agent, CredentialSession } from "@atproto/api";
-import { getSavedSession, saveSession, type savedSessionData, setCurrentDid } from "./session";
 import { logger } from "./logger";
+import { getSavedSession, saveSession, type savedSessionData, setCurrentDid } from "./session";
 
 export async function signIn(serviceUrl: URL, identifier: string, password: string) {
 	const session = new CredentialSession(serviceUrl);

@@ -1,12 +1,12 @@
-import { AppBskyFeedPost, RichText } from "@atproto/api";
+import { type AppBskyFeedPost, RichText } from "@atproto/api";
+import type { SelfLabel } from "@atproto/api/dist/client/types/com/atproto/label/defs";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { FaImage } from "react-icons/fa6";
 import { PieChart } from "react-minimal-pie-chart";
+import { logger } from "../fetcher/logger";
 import { useProfile } from "../lib/contexts/profile";
 import { getRichTextView } from "../lib/richtext";
-import { logger } from "../fetcher/logger";
-import { SelfLabel } from "@atproto/api/dist/client/types/com/atproto/label/defs";
 
 type PostFunc = (params: {
 	content: RichText;
@@ -100,7 +100,8 @@ export function NewPostView({
 							fontWeight: "bold",
 							borderRadius: 999,
 							fontSize: 12,
-							backgroundColor: "white",border: 0,
+							backgroundColor: "white",
+							border: 0,
 						}}
 					>
 						キャンセル

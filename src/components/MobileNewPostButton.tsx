@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { NewPost } from "./NewPost";
-import { useMediaQueries } from "../lib/hooks/device";
 import { FaRegPenToSquare } from "react-icons/fa6";
+import { useMediaQueries } from "../lib/hooks/device";
+import { NewPost } from "./NewPost";
 
 export function MobileNewPostButton({ initText }: { initText?: string }) {
 	const [isOpen, setIsOpen] = useState(false);

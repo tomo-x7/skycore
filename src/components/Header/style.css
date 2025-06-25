@@ -1,0 +1,12 @@
+.header {
+	& .home {
+		display: flex;
+		justify-content: space-between;
+		& a {
+			text-decoration: none;
+			& .feeds-logo{
+				/* padding :5px */
+			}
+		}
+	}
+}

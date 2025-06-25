@@ -1,9 +1,9 @@
-import { IconBaseProps } from "react-icons";
+import type { IconBaseProps } from "react-icons";
 import { AiOutlineBell, AiOutlineHome, AiOutlineMessage, AiOutlineSearch, AiOutlineUser } from "react-icons/ai";
-import { Link, useMatch } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useMatches } from "../lib/hooks/match";
 
-const bottomBarIconStyle = (isCur:boolean) => ({ size: 30,color:isCur?"blue":"black" }) satisfies IconBaseProps;
+const bottomBarIconStyle = (isCur: boolean) => ({ size: 30, color: isCur ? "blue" : "black" }) satisfies IconBaseProps;
 
 export function BottomBar() {
 	const { isHome, isSearch, isMessages, isNotifications, isSelfProfile } = useMatches();

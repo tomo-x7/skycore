@@ -1,9 +1,7 @@
-import type { CredentialSession } from "@atproto/api";
-import { Outlet, useLoaderData } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { useMediaQueries } from "../lib/hooks/device";
 import { Providers } from "../providers";
 import { BottomBar } from "./Bottombar";
-import { Drawer } from "./Drawer";
 import { LeftNav } from "./LeftNav";
 import { RightNav } from "./RightNav";
 
@@ -28,7 +26,6 @@ function DesktopLayout() {
 function MobileLayout() {
 	return (
 		<>
-			<Drawer />
 			<Outlet />
 			<BottomBar />
 		</>

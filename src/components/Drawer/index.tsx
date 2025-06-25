@@ -1,25 +1,22 @@
 import { useState } from "react";
-import DrawerLib from "react-modern-drawer";
-import "react-modern-drawer/dist/index.css";
-import { useProfile } from "../lib/contexts/profile";
-import { GiHamburgerMenu } from "react-icons/gi";
-import "./Drawer.css";
-import { Link } from "react-router-dom";
-import { useMatches } from "../lib/hooks/match";
-import { IconType } from "react-icons";
+import type { IconType } from "react-icons";
 import {
 	AiOutlineBell,
 	AiOutlineHome,
 	AiOutlineMessage,
-	AiOutlineOrderedList,
-	AiOutlineProfile,
 	AiOutlineSearch,
 	AiOutlineSetting,
 	AiOutlineUnorderedList,
 	AiOutlineUser,
 } from "react-icons/ai";
-import { FaHashtag } from "react-icons/fa";
+import { GiHamburgerMenu } from "react-icons/gi";
 import { HiOutlineHashtag } from "react-icons/hi";
+import DrawerLib from "react-modern-drawer";
+import { Link } from "react-router-dom";
+import { useProfile } from "../../lib/contexts/profile";
+import { useMatches } from "../../lib/hooks/match";
+import "react-modern-drawer/dist/index.css";
+import "./style.css";
 
 function createNavItem({ close }: { close: () => void }) {
 	return ({ to, text, active, Icon }: { to: string; text: string; active: boolean; Icon: IconType }) => (
