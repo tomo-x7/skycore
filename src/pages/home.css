@@ -1,2 +1,12 @@
 .home {
+	& .header {
+		display: flex;
+		justify-content: space-between;
+		& a {
+			text-decoration: none;
+		}
+	}
+	& .switcher{
+		border-bottom: 1px solid #ccc;
+	}
 }

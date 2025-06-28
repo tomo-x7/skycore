@@ -87,21 +87,22 @@ function createCacheGetterInner<Func extends (...args: any[]) => any>(
 			cacheMap.delete(key);
 		}
 	};
-	return async (useCache, ...args) => {
+	return (useCache, ...args) => {
 		const key = JSON.stringify(args);
 		const cached = cacheMap.get(key);
 		refreshCache();
 		if (useCache && cached != null) {
-			if (cached.time + cacheTimeSec * 1000 > Date.now()) return await cached.promise;
+			if (cached.time + cacheTimeSec * 1000 > Date.now()) return cached.promise;
 			cacheMap.delete(key);
 		}
 		const promise = wrappedFunc(...args);
 		cacheMap.set(key, { promise, time: Date.now() });
-		const data = await promise;
-		if (!data.ok) {
-			cacheMap.delete(key);
-		}
-		return data;
+		promise.then(data=>{
+			if(!data.ok){
+				cacheMap.delete(key);
+			}
+		})
+		return promise;
 	};
 }
 
@@ -128,10 +129,10 @@ function createNoCacheGetterInner<Func extends (...args: any[]) => any>(
 ): NoCacheGetMethod<Func> {
 	let lastKey: string | null = null;
 	let lastPromise: ResultPromise<Func> | null = null;
-	return async (...args) => {
+	return (...args) => {
 		const key = JSON.stringify(args);
 		if (key === lastKey && lastPromise != null) {
-			return await lastPromise;
+			return lastPromise;
 		}
 		const promise = wrappedFunc(...args);
 		lastKey = key;
@@ -140,6 +141,6 @@ function createNoCacheGetterInner<Func extends (...args: any[]) => any>(
 			lastKey = null;
 			lastPromise = null;
 		}, 300);
-		return await promise;
+		return promise;
 	};
 }

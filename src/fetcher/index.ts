@@ -2,12 +2,15 @@ import { Agent } from "@atproto/api";
 import { CHANGE_USER_KEY, resumeSession } from "./auth";
 import { type SessionData, getCurrentSession, getSavedSession, listSavedSessions, setCurrentDid } from "./session";
 import type { CacheGetMethod, NoCacheGetMethod } from "./types";
-import { createCacheXRPCGetter, createNoCacheXRPCGetter } from "./util";
+import { createCacheGetter, createCacheXRPCGetter, createNoCacheXRPCGetter } from "./util";
+import { SavedFeed } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
+import { GeneratorView } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 
 export interface Fetcher {
 	getTimeline: NoCacheGetMethod<Agent["getTimeline"]>;
 	getProfile: CacheGetMethod<Agent["getProfile"]>;
 	getProfiles: CacheGetMethod<Agent["getProfiles"]>;
+	getSavedFeeds: CacheGetMethod<() => Promise<(SavedFeed & { data: GeneratorView })[]>>;
 	sessionManager: SessionManager;
 	rawAgent: Agent;
 	did: string;
@@ -49,6 +52,24 @@ export async function createFetcher() {
 		getTimeline: createNoCacheXRPCGetter(agent.getTimeline),
 		getProfile: createCacheXRPCGetter(agent.getProfile, 60 * 5),
 		getProfiles: createCacheXRPCGetter(agent.getProfiles, 60 * 5),
+		getSavedFeeds: createCacheGetter(
+			async () => {
+				const pref = await agent.getPreferences();
+				if (pref.savedFeeds.length === 0) return [];
+				const { data: feedData } = await agent.app.bsky.feed.getFeedGenerators({
+					feeds: pref.savedFeeds.filter((feed) => feed.type !== "timeline").map((feed) => feed.value),
+				});
+
+				return pref.savedFeeds.map((feed) => ({
+					...feed,
+					data:
+						feed.type === "timeline"
+							? { displayName: "following" }
+							: feedData.feeds.find((f) => f.uri === feed.value),
+				}));
+			},
+			60 * 60 * 24,
+		),
 	};
 	return fetcher;
 }
