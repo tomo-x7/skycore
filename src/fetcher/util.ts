@@ -45,9 +45,10 @@ export function wrapXRPCFunction<Func extends (...args: any[]) => Promise<XRPCRe
 export function createCacheGetter<Func extends (...args: any[]) => any>(
 	func: Func,
 	cacheTimeSec: number,
+	errorCacheTimeSec?: number,
 ): CacheGetMethod<Func> {
 	const wrappedFunc = wrapFunction(func);
-	return createCacheGetterInner(wrappedFunc, cacheTimeSec);
+	return createCacheGetterInner(wrappedFunc, cacheTimeSec, errorCacheTimeSec);
 }
 /**
  * @param func throwable xrpc
@@ -56,14 +57,16 @@ export function createCacheGetter<Func extends (...args: any[]) => any>(
 export function createCacheXRPCGetter<Func extends (...args: any[]) => Promise<XRPCResponse> | XRPCResponse>(
 	func: Func,
 	cacheTimeSec: number,
+	errorCacheTimeSec?: number,
 ): CacheGetMethod<Func> {
 	const wrappedFunc = wrapXRPCFunction(func);
-	return createCacheGetterInner(wrappedFunc, cacheTimeSec);
+	return createCacheGetterInner(wrappedFunc, cacheTimeSec, errorCacheTimeSec);
 }
 
 function createCacheGetterInner<Func extends (...args: any[]) => any>(
 	wrappedFunc: (...args: Parameters<Func>) => Promise<Result<Awaited<ReturnType<Func>>>>,
 	cacheTimeSec: number,
+	errorCacheTimeSec = 10,
 ): CacheGetMethod<Func> {
 	const cacheMap = new Map<string, { promise: ResultPromise<Func>; time: number }>();
 	const refreshCache = () => {
@@ -97,11 +100,17 @@ function createCacheGetterInner<Func extends (...args: any[]) => any>(
 		}
 		const promise = wrappedFunc(...args);
 		cacheMap.set(key, { promise, time: Date.now() });
-		promise.then(data=>{
-			if(!data.ok){
-				cacheMap.delete(key);
+		promise.then((data) => {
+			if (!data.ok) {
+				if (errorCacheTimeSec == null) {
+					cacheMap.delete(key);
+				} else {
+					setTimeout(() => {
+						cacheMap.delete(key);
+					}, errorCacheTimeSec * 1000);
+				}
 			}
-		})
+		});
 		return promise;
 	};
 }

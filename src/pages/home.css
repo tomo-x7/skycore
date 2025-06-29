@@ -8,5 +8,8 @@
 	}
 	& .switcher{
 		border-bottom: 1px solid #ccc;
+		& .active{
+			border-bottom: 2px solid #00f;
+		}
 	}
 }
