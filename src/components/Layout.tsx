@@ -2,8 +2,8 @@ import { Outlet } from "react-router-dom";
 import { useMediaQueries } from "../lib/hooks/device";
 import { Providers } from "../providers";
 import { BottomBar } from "./Bottombar";
-import { LeftNav } from "./LeftNav";
-import { RightNav } from "./RightNav";
+import { LeftNav } from "./DesktopNav/LeftNav";
+import { RightNav } from "./DesktopNav/RightNav";
 
 export function MainLayout() {
 	const { isMobile } = useMediaQueries();
@@ -13,12 +13,14 @@ function DesktopLayout() {
 	const { isDesktop } = useMediaQueries();
 	return (
 		<>
-			<div style={{ display: "flex" }}>
-				<LeftNav />
-				<div style={{ width: 600 }}>
-					<Outlet />
+			<div style={{height:"100dvh",width:"100dvw",display:"flex",justifyContent:"center"}}>
+				<div style={{ display: "flex" }}>
+					<LeftNav />
+					<div style={{ width: 600 }}>
+						<Outlet />
+					</div>
+					{isDesktop && <RightNav />}
 				</div>
-				{isDesktop && <RightNav />}
 			</div>
 		</>
 	);
