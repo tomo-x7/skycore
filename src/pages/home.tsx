@@ -4,7 +4,7 @@ import { useMediaQueries } from "../lib/hooks/device";
 import { Link } from "react-router-dom";
 import { HiOutlineHashtag } from "react-icons/hi";
 import "./home.css";
-import { useEffect, useMemo, useState, use, Suspense } from "react";
+import { useEffect, useMemo, useState, use, Suspense, useRef } from "react";
 import { SavedFeed, SavedFeedsPref } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
 import { useHomeFeed } from "../lib/contexts/homefeed";
 
@@ -37,10 +37,21 @@ function HomeInner() {
 			setHome(pinnedFeeds[0].value);
 		}
 	}, [pinnedFeeds, home, setHome]);
+	const switcherRef = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		const onWheel = (e: WheelEvent) => {
+			if (switcherRef.current != null) {
+				switcherRef.current.scrollLeft += e.deltaY;
+				e.preventDefault();
+			}
+		};
+		switcherRef.current?.addEventListener("wheel", onWheel, { passive: false });
+		return () => switcherRef.current?.removeEventListener("wheel", onWheel);
+	},[]);
 	console.log(home);
 	return (
 		<>
-			<div className="switcher">
+			<div className="switcher" ref={switcherRef}>
 				{pinnedFeeds.map((feed) => (
 					<button
 						type="button"

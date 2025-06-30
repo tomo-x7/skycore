@@ -3,5 +3,5 @@
 import "./style.css";
 
 export function RightNav() {
-	return <>right navigation</>;
+	return <div className="rightNav">right navigation</div>;
 }
