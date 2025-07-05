@@ -7,6 +7,7 @@ import "./home.css";
 import { useEffect, useMemo, useState, use, Suspense, useRef } from "react";
 import { SavedFeed, SavedFeedsPref } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
 import { useHomeFeed } from "../lib/contexts/homefeed";
+import { Timeline } from "../components/Timeline";
 
 export function Home() {
 	const { isMobile } = useMediaQueries();
@@ -47,7 +48,7 @@ function HomeInner() {
 		};
 		switcherRef.current?.addEventListener("wheel", onWheel, { passive: false });
 		return () => switcherRef.current?.removeEventListener("wheel", onWheel);
-	},[]);
+	}, []);
 	console.log(home);
 	return (
 		<>
@@ -63,9 +64,7 @@ function HomeInner() {
 					</button>
 				))}
 			</div>
-			{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((v) => (
-				<div key={v}>post {v}</div>
-			))}
+			<div className="tl">{home && <Timeline feed={home} key={home} />}</div>
 			<MobileNewPostButton />
 		</>
 	);

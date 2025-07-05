@@ -8,6 +8,7 @@ import { GeneratorView } from "@atproto/api/dist/client/types/app/bsky/feed/defs
 
 export interface Fetcher {
 	getTimeline: NoCacheGetMethod<Agent["getTimeline"]>;
+	getFeed: NoCacheGetMethod<Agent["app"]["bsky"]["feed"]["getFeed"]>;
 	getProfile: CacheGetMethod<Agent["getProfile"]>;
 	getProfiles: CacheGetMethod<Agent["getProfiles"]>;
 	getSavedFeeds: CacheGetMethod<() => Promise<(SavedFeed & { data: GeneratorView })[]>>;
@@ -50,6 +51,7 @@ export async function createFetcher() {
 		rawAgent: agent,
 		did: agent.assertDid,
 		getTimeline: createNoCacheXRPCGetter(agent.getTimeline),
+		getFeed: createNoCacheXRPCGetter((...p)=>agent.app.bsky.feed.getFeed(...p)),
 		getProfile: createCacheXRPCGetter(agent.getProfile, 60 * 5),
 		getProfiles: createCacheXRPCGetter(agent.getProfiles, 60 * 5),
 		getSavedFeeds: createCacheGetter(

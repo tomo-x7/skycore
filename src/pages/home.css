@@ -1,7 +1,11 @@
 .home {
-	overflow-x: hidden;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
 	& .header {
 		display: flex;
+		flex-shrink: 0;
 		justify-content: space-between;
 		& a {
 			text-decoration: none;
@@ -11,11 +15,11 @@
 		border-bottom: 1px solid #ccc;
 		display: flex;
 		overflow-x: auto;
-		flex-wrap: nowrap;
 		scrollbar-width: thin;
 		scroll-behavior: smooth;
 		width: 100%;
-		
+		flex-shrink: 0;
+
 		& button {
 			display: flex;
 			align-items: center;
@@ -29,9 +33,14 @@
 			&.active {
 				border-bottom-color: #00f;
 			}
-			&:hover{
+			&:hover {
 				background-color: #eee;
 			}
 		}
+	}
+	& .tl {
+		flex-grow: 1;
+		min-width: 0;
+		min-height: 0;
 	}
 }
