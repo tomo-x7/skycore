@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AutoSizer, InfiniteLoader, List } from "react-virtualized";
 import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
 import "./Timeline.css";
+import { TLPostThread } from "./Post/TLPost";
 
 type PostData =
 	| AppBskyFeedDefs.FeedViewPost
@@ -34,15 +35,18 @@ export function Timeline({ feed }: { feed: string | "following" }) {
 		[feed],
 	);
 	useEffect(() => {
-		const obs = new IntersectionObserver((entries, obs) => {
-			entries.forEach((entry) => {
-				if (entry.isIntersecting) {
-					const cursor = entry.target.getAttribute("data-cursor");
-					load(cursor ?? undefined);
-					obs.unobserve(entry.target);
-				}
-			});
-		},{rootMargin:"0px 0px 1000px 0px",root:timelineRef.current});
+		const obs = new IntersectionObserver(
+			(entries, obs) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						const cursor = entry.target.getAttribute("data-cursor");
+						load(cursor ?? undefined);
+						obs.unobserve(entry.target);
+					}
+				});
+			},
+			{ rootMargin: "0px 0px 1000px 0px", root: timelineRef.current },
+		);
 		setObserver(obs);
 		return () => {
 			obs.disconnect();
@@ -51,32 +55,37 @@ export function Timeline({ feed }: { feed: string | "following" }) {
 	}, [load]);
 	return (
 		<div className="timeline" ref={timelineRef}>
-				{list.map((postdata) => {
-					switch (postdata.$type) {
-						case "loadmore":
-							return (
-								<MoreLoader
-									key={postdata.cursor ?? "initload"}
-									observer={observer}
-									cursor={postdata.cursor}
-								/>
-							);
-						case "error":
-							return (
-								<div key={postdata.cursor ?? postdata.error} className="error">
-									Error: {postdata.error}
-								</div>
-							);
-						case "end":
-							return (
-								<div key={"end"} className="end">
-									No more posts.
-								</div>
-							);
-						default:
-							return <Post key={postdata.post.uri} data={postdata} />;
-					}
-				})}
+			{list.map((postdata) => {
+				switch (postdata.$type) {
+					case "loadmore":
+						return (
+							<MoreLoader
+								key={postdata.cursor ?? "initload"}
+								observer={observer}
+								cursor={postdata.cursor}
+							/>
+						);
+					case "error":
+						return (
+							<div key={postdata.cursor ?? postdata.error} className="error">
+								{postdata.error}
+								{postdata.cursor != null && (
+									<button type="button" onClick={() => load(postdata.cursor)}>
+										Retry
+									</button>
+								)}
+							</div>
+						);
+					case "end":
+						return (
+							<div key={"end"} className="end">
+								No more posts.
+							</div>
+						);
+					default:
+						return <TLPostThread key={postdata.post.uri} data={postdata} feed={feed} />;
+				}
+			})}
 		</div>
 	);
 }
@@ -96,6 +105,4 @@ function MoreLoader({ cursor, observer }: { observer: IntersectionObserver | nul
 	);
 }
 
-function Post({ data }: { data: AppBskyFeedDefs.FeedViewPost }) {
-	return <div>{(data.post.record as AppBskyFeedPost.Record).text}</div>;
-}
+
