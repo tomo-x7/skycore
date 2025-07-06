@@ -39,7 +39,6 @@ function shouldShowFollowingReply(data: AppBskyFeedDefs.ReplyRef, author: AppBsk
 }
 
 function ReplyTree({ data }: { data: AppBskyFeedDefs.ReplyRef }) {
-	if (data.grandparentAuthor != null && data.grandparentAuthor.viewer?.following == null) return null;
 	if (data.root.$type !== "app.bsky.feed.defs#postView" || data.parent.$type !== "app.bsky.feed.defs#postView")
 		return null;
 	const root = data.root as AppBskyFeedDefs.PostView;
@@ -47,9 +46,10 @@ function ReplyTree({ data }: { data: AppBskyFeedDefs.ReplyRef }) {
 	if (root.uri === parent.uri) {
 		return <TLPost post={parent} hasReply />;
 	}
+	const isLong = (parent.record as AppBskyFeedPost.Record).reply?.parent.uri !== root.uri;
 	return (
 		<>
-			<TLPost post={root} hasReply longReply />
+			<TLPost post={root} hasReply longReply={isLong} />
 			<TLPost post={parent} hasReply isReply />
 		</>
 	);
@@ -81,7 +81,7 @@ function TLPost({
 				</div>
 				<div className="text">{(post.record as AppBskyFeedPost.Record).text}</div>
 
-			{longReply && (<div className="openthread">スレッドをすべて表示</div>)}
+				{longReply && <div className="openthread">スレッドをすべて表示</div>}
 			</div>
 		</div>
 	);
