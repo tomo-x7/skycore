@@ -3,6 +3,7 @@ import { AutoSizer, InfiniteLoader, List } from "react-virtualized";
 import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
 import "./Timeline.css";
 import { TLPostThread } from "./Post/TLPost";
+import { ReasonRepost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 
 type PostData =
 	| AppBskyFeedDefs.FeedViewPost
@@ -14,6 +15,16 @@ export function Timeline({ feed }: { feed: string | "following" }) {
 	const [list, setList] = useState<PostData[]>([{ $type: "loadmore", cursor: undefined }]);
 	const [observer, setObserver] = useState<IntersectionObserver | null>(null);
 	const timelineRef = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		const curGoTop = () => {
+			setList([]);
+			load(undefined);
+		};
+		globalThis.goTop = curGoTop;
+		return () => {
+			if (goTop === curGoTop) goTop = () => void 0;
+		};
+	}, []);
 	const load = useCallback(
 		(cursor: string | undefined) => {
 			(feed === "following" ? fetcher.getTimeline({ cursor }) : fetcher.getFeed({ cursor, feed })).then((res) => {
@@ -83,7 +94,13 @@ export function Timeline({ feed }: { feed: string | "following" }) {
 							</div>
 						);
 					default:
-						return <TLPostThread key={postdata.post.uri} data={postdata} feed={feed} />;
+						return (
+							<TLPostThread
+								key={postdata.post.uri + (postdata.reason as ReasonRepost)?.by.did}
+								data={postdata}
+								feed={feed}
+							/>
+						);
 				}
 			})}
 		</div>
@@ -94,6 +111,7 @@ function MoreLoader({ cursor, observer }: { observer: IntersectionObserver | nul
 	useEffect(() => {
 		if (ref.current == null) return;
 		observer?.observe(ref.current);
+		console.log("observe");
 		return () => {
 			if (ref.current) observer?.unobserve(ref.current);
 		};
@@ -104,5 +122,3 @@ function MoreLoader({ cursor, observer }: { observer: IntersectionObserver | nul
 		</div>
 	);
 }
-
-

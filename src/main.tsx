@@ -29,9 +29,12 @@ async function init() {
 		return;
 	}
 	globalThis.fetcher = fetcher;
+	globalThis.goTop = () => void 0;
 	createRoot(document.getElementById("root")!).render(
 		<StrictMode>
-			<Suspense fallback={<>loading...</>}><App /></Suspense>
+			<Suspense fallback={<>loading...</>}>
+				<App />
+			</Suspense>
 		</StrictMode>,
 	);
 }

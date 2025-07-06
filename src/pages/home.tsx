@@ -58,7 +58,7 @@ function HomeInner() {
 						type="button"
 						key={feed.id}
 						className={home === feed.value ? "active" : ""}
-						onClick={() => setHome(feed.value)}
+						onClick={home === feed.value ? ()=>goTop() : () => setHome(feed.value)}
 					>
 						{feed.data.displayName}
 					</button>
