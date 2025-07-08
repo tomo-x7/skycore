@@ -1,0 +1,37 @@
+{
+	"lexicon": 1,
+	"id": "win.tomo-x.atunits.unit",
+	"defs": {
+		"main": {
+			"type": "record",
+			"description": "Definition for loading Units with ATUnits.",
+			"key": "any",
+			"record": {
+				"type": "object",
+				"required": ["reactver", "target", "src"],
+				"properties": {
+					"libver": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"description": "Supported library versions (such as React). Only `*` wildcard is allowed. Example: `react@19.*.*`"
+					},
+					"target": {
+						"type": "array",
+						"items": {
+							"type": "string",
+							"format": "nsid"
+						},
+						"description": "Targets supported by this Unit. Written in `.well-known/atunits.json`. Example: `win.tomo-x.skycore.unit.postv1`"
+					},
+					"src": {
+						"type": "string",
+						"format": "uri",
+						"description": "URL of the Unit body."
+					}
+				}
+			}
+		}
+	}
+}

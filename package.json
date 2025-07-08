@@ -25,6 +25,7 @@
 		"zod": "^3.24.2"
 	},
 	"devDependencies": {
+		"@atproto/lex-cli": "^0.8.3",
 		"@types/react": "^19.0.10",
 		"@types/react-dom": "^19.0.4",
 		"@types/react-virtualized": "^9.22.2",
