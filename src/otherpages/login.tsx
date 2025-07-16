@@ -27,31 +27,31 @@ export function Login() {
 			<label>
 				service url:
 				<input
-					type="text"
 					autoComplete="off"
 					autoCorrect="off"
-					value={serviceUrl}
 					onChange={(ev) => setServiceUrl(ev.target.value)}
+					type="text"
+					value={serviceUrl}
 				/>
 			</label>
 			<br />
 			<label>
 				handle:
 				<input
-					type="text"
 					autoComplete="username"
 					autoCorrect="off"
-					value={identifier}
 					onChange={(ev) => setIdentifier(ev.target.value)}
+					type="text"
+					value={identifier}
 				/>
 			</label>
 			<br />
 			<label>
 				password:
-				<input type="password" value={password} onChange={(ev) => setPassword(ev.target.value)} />
+				<input onChange={(ev) => setPassword(ev.target.value)} type="password" value={password} />
 			</label>
 			<br />
-			<button type="button" onClick={handleLogin}>
+			<button onClick={handleLogin} type="button">
 				login
 			</button>
 			<br />

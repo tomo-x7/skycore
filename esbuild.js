@@ -12,11 +12,11 @@ try {
 	fs.rmSync(path.join(__dirname, "public", "units"), { recursive: true });
 } catch {}
 await esbuild.build({
-	entryPoints: ["units/*.tsx"],
 	bundle: true,
-	outdir: "public/units",
+	entryPoints: ["units/*.tsx"],
 	format: "esm",
 	jsxFactory: "React.createElement",
-	sourcemap: isDev,
 	minify: !isDev,
+	outdir: "public/units",
+	sourcemap: isDev,
 });

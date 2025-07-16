@@ -1,4 +1,4 @@
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
 import { MainLayout } from "./components/Layout";
 import { Home } from "./pages/home";
 
@@ -6,16 +6,16 @@ const router = createBrowserRouter(
 	createRoutesFromElements(
 		<>
 			<Route element={<MainLayout />}>
-				<Route index element={<Home />} />
-				<Route path="/search" element={<>search</>} />
-				<Route path="/messages" element={<>messages</>} />
-				<Route path="/notifications" element={<>notifications</>} />
-				<Route path="/feeds" element={<>feeds</>} />
-				<Route path="/lists" element={<>lists</>} />
-				<Route path="/profile/:user" element={<>user</>} />
+				<Route element={<Home />} index />
+				<Route element={<>search</>} path="/search" />
+				<Route element={<>messages</>} path="/messages" />
+				<Route element={<>notifications</>} path="/notifications" />
+				<Route element={<>feeds</>} path="/feeds" />
+				<Route element={<>lists</>} path="/lists" />
+				<Route element={<>user</>} path="/profile/:user" />
 			</Route>
 			{/* フォールバック */}
-			<Route path="*" element={<>not found</>} />
+			<Route element={<>not found</>} path="*" />
 		</>,
 	),
 );

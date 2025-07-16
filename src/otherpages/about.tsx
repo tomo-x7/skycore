@@ -1,3 +1,3 @@
 export function About() {
-	return <>about skied core</>;
+	return <h1>about skied core</h1>;
 }

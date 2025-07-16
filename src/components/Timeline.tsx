@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AutoSizer, InfiniteLoader, List } from "react-virtualized";
-import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
+import type { AppBskyFeedDefs } from "@atproto/api";
+import { useCallback, useEffect, useRef, useState } from "react";
 import "./Timeline.css";
+import type { ReasonRepost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { TLPostThread } from "./Post/TLPost";
-import { ReasonRepost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 
 type PostData =
 	| AppBskyFeedDefs.FeedViewPost
@@ -15,21 +14,11 @@ export function Timeline({ feed }: { feed: string | "following" }) {
 	const [list, setList] = useState<PostData[]>([{ $type: "loadmore", cursor: undefined }]);
 	const [observer, setObserver] = useState<IntersectionObserver | null>(null);
 	const timelineRef = useRef<HTMLDivElement>(null);
-	useEffect(() => {
-		const curGoTop = () => {
-			setList([]);
-			load(undefined);
-		};
-		globalThis.goTop = curGoTop;
-		return () => {
-			if (goTop === curGoTop) goTop = () => void 0;
-		};
-	}, []);
 	const load = useCallback(
 		(cursor: string | undefined) => {
 			(feed === "following" ? fetcher.getTimeline({ cursor }) : fetcher.getFeed({ cursor, feed })).then((res) => {
 				if (!res.ok) {
-					setList((old) => [...old, { $type: "error", error: res.error, cursor }]);
+					setList((old) => [...old, { $type: "error", cursor, error: res.error }]);
 					return;
 				}
 				// if (res.data.feed.length === 0) {
@@ -46,6 +35,16 @@ export function Timeline({ feed }: { feed: string | "following" }) {
 		[feed],
 	);
 	useEffect(() => {
+		const curGoTop = () => {
+			setList([]);
+			load(undefined);
+		};
+		globalThis.goTop = curGoTop;
+		return () => {
+			if (goTop === curGoTop) goTop = () => void 0;
+		};
+	}, [load]);
+	useEffect(() => {
 		const obs = new IntersectionObserver(
 			(entries, obs) => {
 				entries.forEach((entry) => {
@@ -56,7 +55,7 @@ export function Timeline({ feed }: { feed: string | "following" }) {
 					}
 				});
 			},
-			{ rootMargin: "0px 0px 1000px 0px", root: timelineRef.current },
+			{ root: timelineRef.current, rootMargin: "0px 0px 1000px 0px" },
 		);
 		setObserver(obs);
 		return () => {
@@ -71,17 +70,17 @@ export function Timeline({ feed }: { feed: string | "following" }) {
 					case "loadmore":
 						return (
 							<MoreLoader
+								cursor={postdata.cursor}
 								key={postdata.cursor ?? "initload"}
 								observer={observer}
-								cursor={postdata.cursor}
 							/>
 						);
 					case "error":
 						return (
-							<div key={postdata.cursor ?? postdata.error} className="error">
+							<div className="error" key={postdata.cursor ?? postdata.error}>
 								{postdata.error}
 								{postdata.cursor != null && (
-									<button type="button" onClick={() => load(postdata.cursor)}>
+									<button onClick={() => load(postdata.cursor)} type="button">
 										Retry
 									</button>
 								)}
@@ -89,16 +88,16 @@ export function Timeline({ feed }: { feed: string | "following" }) {
 						);
 					case "end":
 						return (
-							<div key={"end"} className="end">
+							<div className="end" key={"end"}>
 								No more posts.
 							</div>
 						);
 					default:
 						return (
 							<TLPostThread
-								key={postdata.post.uri + (postdata.reason as ReasonRepost)?.by.did}
 								data={postdata}
 								feed={feed}
+								key={postdata.post.uri + (postdata.reason as ReasonRepost)?.by.did}
 							/>
 						);
 				}
@@ -117,7 +116,7 @@ function MoreLoader({ cursor, observer }: { observer: IntersectionObserver | nul
 		};
 	}, [observer]);
 	return (
-		<div ref={ref} data-cursor={cursor} style={{ color: "red" }}>
+		<div data-cursor={cursor} ref={ref} style={{ color: "red" }}>
 			loadmore {cursor ?? "init"}
 		</div>
 	);

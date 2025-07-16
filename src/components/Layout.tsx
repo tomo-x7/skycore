@@ -12,17 +12,15 @@ export function MainLayout() {
 function DesktopLayout() {
 	const { isDesktop } = useMediaQueries();
 	return (
-		<>
-			<div style={{height:"100dvh",width:"100dvw",display:"flex",justifyContent:"center"}}>
-				<div style={{ display: "flex" }}>
-					<LeftNav />
-					<div style={{ width: 600 }}>
-						<Outlet />
-					</div>
-					{isDesktop && <RightNav />}
+		<div style={{ display: "flex", height: "100dvh", justifyContent: "center", width: "100dvw" }}>
+			<div style={{ display: "flex" }}>
+				<LeftNav />
+				<div style={{ width: 600 }}>
+					<Outlet />
 				</div>
+				{isDesktop && <RightNav />}
 			</div>
-		</>
+		</div>
 	);
 }
 function MobileLayout() {

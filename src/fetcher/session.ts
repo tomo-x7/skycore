@@ -43,7 +43,7 @@ export function saveSession(data: savedSessionData) {
 			// 重複防止
 			?.filter((v) => v.main.did !== data.main.did)
 			// isexpired削除
-			.map(({ main, avatar, serviceUrl }) => ({ main, avatar, serviceUrl })) ?? [];
+			.map(({ main, avatar, serviceUrl }) => ({ avatar, main, serviceUrl })) ?? [];
 	saved.push(data);
 	localStorage.setItem(SESSIONS_KEY, JSON.stringify(saved));
 }

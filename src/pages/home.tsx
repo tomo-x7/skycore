@@ -1,32 +1,29 @@
-import { MobileNewPostButton } from "../components/MobileNewPostButton";
-import { Drawer } from "../components/Drawer/";
-import { useMediaQueries } from "../lib/hooks/device";
-import { Link } from "react-router-dom";
 import { HiOutlineHashtag } from "react-icons/hi";
+import { Link } from "react-router-dom";
+import { Drawer } from "../components/Drawer/";
+import { MobileNewPostButton } from "../components/MobileNewPostButton";
+import { useMediaQueries } from "../lib/hooks/device";
 import "./home.css";
-import { useEffect, useMemo, useState, use, Suspense, useRef } from "react";
-import { SavedFeed, SavedFeedsPref } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
-import { useHomeFeed } from "../lib/contexts/homefeed";
+import { Suspense, use, useEffect, useRef } from "react";
 import { Timeline } from "../components/Timeline";
+import { useHomeFeed } from "../lib/contexts/homefeed";
 
 export function Home() {
 	const { isMobile } = useMediaQueries();
 
 	return (
-		<>
-			<div className="home">
-				<div className="header">
-					<div>{isMobile && <Drawer />}</div>
-					<img src="/logo.png" alt="logo" className="logo" />
-					<Link to="/feeds">
-						<HiOutlineHashtag className="feeds-logo" size={30} color="#666" />
-					</Link>
-				</div>
-				<Suspense fallback={<div>HomeFeed Loading...</div>}>
-					<HomeInner />
-				</Suspense>
+		<div className="home">
+			<div className="header">
+				<div>{isMobile && <Drawer />}</div>
+				<img alt="logo" className="logo" src="/logo.png" />
+				<Link to="/feeds">
+					<HiOutlineHashtag className="feeds-logo" color="#666" size={30} />
+				</Link>
 			</div>
-		</>
+			<Suspense fallback={<div>HomeFeed Loading...</div>}>
+				<HomeInner />
+			</Suspense>
+		</div>
 	);
 }
 function HomeInner() {
@@ -55,10 +52,10 @@ function HomeInner() {
 			<div className="switcher" ref={switcherRef}>
 				{pinnedFeeds.map((feed) => (
 					<button
-						type="button"
-						key={feed.id}
 						className={home === feed.value ? "active" : ""}
-						onClick={home === feed.value ? ()=>goTop() : () => setHome(feed.value)}
+						key={feed.id}
+						onClick={home === feed.value ? () => goTop() : () => setHome(feed.value)}
+						type="button"
 					>
 						{feed.data.displayName}
 					</button>

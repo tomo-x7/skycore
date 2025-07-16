@@ -1,24 +1,24 @@
 import { Link } from "react-router-dom";
 import "./style.css";
-import { IconType } from "react-icons";
+import type { IconType } from "react-icons";
 import {
-	AiOutlineHome,
-	AiOutlineSearch,
-	AiOutlineMessage,
 	AiOutlineBell,
+	AiOutlineHome,
+	AiOutlineMessage,
+	AiOutlineSearch,
+	AiOutlineSetting,
 	AiOutlineUnorderedList,
 	AiOutlineUser,
-	AiOutlineSetting,
 } from "react-icons/ai";
 import { HiOutlineHashtag } from "react-icons/hi";
-import { useMatches } from "../../lib/hooks/match";
 import { useProfile } from "../../lib/contexts/profile";
+import { useMatches } from "../../lib/hooks/match";
 
 function NavItem({ to, text, active, Icon }: { to: string; text: string; active: boolean; Icon: IconType }) {
 	return (
 		<li>
-			<Link to={to} onClick={close} className={active ? "active" : ""}>
-				<Icon size={25} className="icon" />
+			<Link className={active ? "active" : ""} onClick={close} to={to}>
+				<Icon className="icon" size={25} />
 				{text}
 			</Link>
 		</li>
@@ -41,19 +41,19 @@ export function LeftNav() {
 			</div>
 			<div className="navlist">
 				<ul>
-					<NavItem to="/" text="ホーム" active={isHome} Icon={AiOutlineHome} />
-					<NavItem to="/search" text="検索" active={isSearch} Icon={AiOutlineSearch} />
-					<NavItem to="/messages" text="チャット" active={isMessages} Icon={AiOutlineMessage} />
-					<NavItem to="/notifications" text="通知" active={isNotifications} Icon={AiOutlineBell} />
-					<NavItem to="/feeds" text="フィード" active={isFeeds} Icon={HiOutlineHashtag} />
-					<NavItem to="/lists" text="リスト" active={isLists} Icon={AiOutlineUnorderedList} />
+					<NavItem active={isHome} Icon={AiOutlineHome} text="ホーム" to="/" />
+					<NavItem active={isSearch} Icon={AiOutlineSearch} text="検索" to="/search" />
+					<NavItem active={isMessages} Icon={AiOutlineMessage} text="チャット" to="/messages" />
+					<NavItem active={isNotifications} Icon={AiOutlineBell} text="通知" to="/notifications" />
+					<NavItem active={isFeeds} Icon={HiOutlineHashtag} text="フィード" to="/feeds" />
+					<NavItem active={isLists} Icon={AiOutlineUnorderedList} text="リスト" to="/lists" />
 					<NavItem
-						to={`/profile/${profile.did}`}
-						text="プロフィール"
 						active={isSelfProfile}
 						Icon={AiOutlineUser}
+						text="プロフィール"
+						to={`/profile/${profile.did}`}
 					/>
-					<NavItem to="/settings" text="設定" active={isSettings} Icon={AiOutlineSetting} />
+					<NavItem active={isSettings} Icon={AiOutlineSetting} text="設定" to="/settings" />
 				</ul>
 			</div>
 		</div>

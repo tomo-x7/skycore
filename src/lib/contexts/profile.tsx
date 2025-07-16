@@ -1,6 +1,7 @@
 import type { AppBskyActorDefs } from "@atproto/api";
-import { type PropsWithChildren, createContext, useContext, useEffect, useState } from "react";
+import { createContext, type PropsWithChildren, useContext, useEffect, useState } from "react";
 import { logger } from "../../fetcher/logger";
+
 type Profile = Omit<AppBskyActorDefs.ProfileViewDetailed, "did" | "handle"> & { handle?: string; did?: string };
 const Context = createContext<Profile>({});
 

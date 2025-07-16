@@ -22,31 +22,23 @@ export function NewPost({ close, initText }: { close: () => void; initText?: str
 			await content.detectFacets(fetcher.rawAgent);
 			await fetcher.rawAgent.post({
 				$type: "app.bsky.feed.post",
-				facets: content.facets,
-				text: content.text,
 				embed,
-				reply,
-				langs,
+				facets: content.facets,
 				labels: labels == null ? undefined : { $type: "com.atproto.label.defs#selfLabels", values: labels },
+				langs,
+				reply,
+				text: content.text,
 			});
 			return { ok: true };
 		} catch (e) {
 			logger.error(`Failed to post: ${String(e)}`);
-			return { ok: false, error: String(e) };
+			return { error: String(e), ok: false };
 		}
 	};
-	return <>{<NewPostView post={post} initText={initText} close={close} />}</>;
+	return <>{<NewPostView close={close} initText={initText} post={post} />}</>;
 }
 
-export function NewPostView({
-	post,
-	initText = "",
-	close,
-}: {
-	post: PostFunc;
-	initText?: string;
-	close: () => void;
-}) {
+export function NewPostView({ post, initText = "", close }: { post: PostFunc; initText?: string; close: () => void }) {
 	const [text, setText] = useState(initText);
 	const [error, setError] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -81,55 +73,55 @@ export function NewPostView({
 		<div
 			className="fixed flex justify-center"
 			style={{
-				inset: 0,
-				backgroundColor: "#0008",
 				alignItems: "start",
+				backgroundColor: "#0008",
+				inset: 0,
 			}}
 		>
-			<div style={{ backgroundColor: "white", marginTop: 50, borderRadius: 8 }}>
+			<div style={{ backgroundColor: "white", borderRadius: 8, marginTop: 50 }}>
 				<div
 					className="flex items-center"
-					style={{ paddingLeft: 4, paddingRight: 4, justifyContent: "space-between", height: 50, gap: 20 }}
+					style={{ gap: 20, height: 50, justifyContent: "space-between", paddingLeft: 4, paddingRight: 4 }}
 				>
 					<button
-						type="button"
 						onClick={close}
 						style={{
-							color: "blue",
-							padding: "7px 9px",
-							fontWeight: "bold",
-							borderRadius: 999,
-							fontSize: 12,
 							backgroundColor: "white",
 							border: 0,
+							borderRadius: 999,
+							color: "blue",
+							fontSize: 12,
+							fontWeight: "bold",
+							padding: "7px 9px",
 						}}
+						type="button"
 					>
 						キャンセル
 					</button>
-					<div style={{ flexGrow: 1, textAlign: "right", color: "red" }}>
+					<div style={{ color: "red", flexGrow: 1, textAlign: "right" }}>
 						{error && "エラーが発生しました"}
 					</div>
 					<button
-						type="button"
-						onClick={handlePost}
 						className="flex"
-						style={{
-							color: "white",
-							backgroundColor: "blue",
-							padding: "7px 9px",
-							borderRadius: 999,
-							fontWeight: "bold",
-							fontSize: 12,
-							border: 0,
-						}}
 						disabled={text.length < 1 || loading}
+						onClick={handlePost}
+						style={{
+							backgroundColor: "blue",
+							border: 0,
+							borderRadius: 999,
+							color: "white",
+							fontSize: 12,
+							fontWeight: "bold",
+							padding: "7px 9px",
+						}}
+						type="button"
 					>
 						{loading ? "" : "投稿"}
 					</button>
 				</div>
 				<div className="flex items-start">
-					<img src={avatar} width={50} height={50} style={{ borderRadius: 999 }} />
-					<Textarea value={text} onChange={handleChange} />
+					<img height={50} src={avatar} style={{ borderRadius: 999 }} width={50} />
+					<Textarea onChange={handleChange} value={text} />
 				</div>
 				<hr />
 				<div className="flex" style={{ justifyContent: "space-between" }}>
@@ -156,45 +148,45 @@ function Textarea({ value, onChange }: { value: string; onChange: (value: string
 		</span>
 	));
 	return (
-		<div style={{ width: 500, maxHeight: "calc(90dvh-100px)", minHeight: 140, overflowY: "auto", padding: 12 }}>
+		<div style={{ maxHeight: "calc(90dvh-100px)", minHeight: 140, overflowY: "auto", padding: 12, width: 500 }}>
 			<div className="relative" style={{ height: "100%" }}>
 				<textarea
 					className="absolute"
+					onChange={(ev) => onChange(ev.target.value)}
 					onClick={(e) => e.stopPropagation()}
 					style={{
+						background: "none",
+						border: 0,
+						caret: "black",
+						caretColor: "black",
+						color: "transparent",
+						fontSize: 16,
+						height: "100%",
 						left: 0,
+						lineHeight: 1.2,
+						margin: 0,
+						outline: 0,
+						padding: 0,
+						resize: "none",
 						top: 0,
 						width: "100%",
-						height: "100%",
-						resize: "none",
-						outline: 0,
-						caret: "black",
-						fontSize: 16,
-						border: 0,
-						padding: 0,
-						margin: 0,
-						background: "none",
-						color: "transparent",
-						caretColor: "black",
-						lineHeight: 1.2,
 					}}
 					value={value}
-					onChange={(ev) => onChange(ev.target.value)}
 				/>
 				<div
+					aria-hidden="true"
 					style={{
 						color: value ? "black" : "gray",
+						cursor: "none",
+						fontSize: 16,
+						lineHeight: 1.2,
+						margin: 0,
 						overflow: "hidden",
+						padding: 0,
 						whiteSpace: "pre-wrap",
 						wordWrap: "break-word",
-						fontSize: 16,
-						padding: 0,
-						margin: 0,
-						cursor: "none",
 						zIndex: 1,
-						lineHeight: 1.2,
 					}}
-					aria-hidden="true"
 				>
 					{textEl || "最近どう？"}
 					{"\u200b"}
@@ -208,13 +200,13 @@ function TextCountChart({ text }: { text: string }) {
 	const isOverflow = text.length > 300;
 	return (
 		<PieChart
-			style={{ width: 30 }}
+			data={[
+				{ color: "#1083fe", value: text.length },
+				{ color: isOverflow ? "#f00" : "#d4dbe2", value: 300 - text.length },
+			]}
 			lineWidth={30}
 			startAngle={-90}
-			data={[
-				{ value: text.length, color: "#1083fe" },
-				{ value: 300 - text.length, color: isOverflow ? "#f00" : "#d4dbe2" },
-			]}
+			style={{ width: 30 }}
 			// segmentsStyle={(i) => (isOverflow && i === 1 && { strokeWidth: 50 }) || undefined}
 			// segmentsShift={(i) => (isOverflow && i === 1 && -25) || undefined}
 		/>

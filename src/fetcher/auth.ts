@@ -1,13 +1,13 @@
 import { Agent, CredentialSession } from "@atproto/api";
 import { logger } from "./logger";
-import { getSavedSession, saveSession, type savedSessionData, setCurrentDid } from "./session";
+import { getSavedSession, type savedSessionData, saveSession, setCurrentDid } from "./session";
 
 export async function signIn(serviceUrl: URL, identifier: string, password: string) {
 	const session = new CredentialSession(serviceUrl);
 	await session.login({ identifier, password });
 	const data = session.session!;
 	const avatar = await getAvatar(data.did);
-	saveSession({ main: data, avatar, serviceUrl: serviceUrl.toString() });
+	saveSession({ avatar, main: data, serviceUrl: serviceUrl.toString() });
 	setCurrentDid(data.did);
 }
 

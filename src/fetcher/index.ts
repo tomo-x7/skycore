@@ -1,10 +1,10 @@
 import { Agent } from "@atproto/api";
+import type { SavedFeed } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
+import type { GeneratorView } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { CHANGE_USER_KEY, resumeSession } from "./auth";
-import { type SessionData, getCurrentSession, getSavedSession, listSavedSessions, setCurrentDid } from "./session";
+import { getCurrentSession, getSavedSession, listSavedSessions, type SessionData, setCurrentDid } from "./session";
 import type { CacheGetMethod, NoCacheGetMethod } from "./types";
 import { createCacheGetter, createCacheXRPCGetter, createNoCacheXRPCGetter } from "./util";
-import { SavedFeed } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
-import { GeneratorView } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 
 export interface Fetcher {
 	getTimeline: NoCacheGetMethod<Agent["getTimeline"]>;
@@ -22,15 +22,15 @@ interface SessionManager {
 	signOutAll: () => void;
 }
 const sessionManager: SessionManager = {
-	listSavedSessions: () => {
-		return listSavedSessions();
-	},
 	changeUser: (did) => {
 		setCurrentDid(did);
 		if (getSavedSession(did)?.isexpired === false) {
 			location.reload();
 		}
 		location.href = "/login";
+	},
+	listSavedSessions: () => {
+		return listSavedSessions();
 	},
 	signOutAll: () => {
 		location.href = "/login";
@@ -47,11 +47,8 @@ export async function createFetcher() {
 	sessionStorage.removeItem(CHANGE_USER_KEY);
 
 	const fetcher: Fetcher = {
-		sessionManager,
-		rawAgent: agent,
 		did: agent.assertDid,
-		getTimeline: createNoCacheXRPCGetter(agent.getTimeline),
-		getFeed: createNoCacheXRPCGetter((...p)=>agent.app.bsky.feed.getFeed(...p)),
+		getFeed: createNoCacheXRPCGetter((...p) => agent.app.bsky.feed.getFeed(...p)),
 		getProfile: createCacheXRPCGetter(agent.getProfile, 60 * 5),
 		getProfiles: createCacheXRPCGetter(agent.getProfiles, 60 * 5),
 		getSavedFeeds: createCacheGetter(
@@ -72,6 +69,9 @@ export async function createFetcher() {
 			},
 			60 * 60 * 24,
 		),
+		getTimeline: createNoCacheXRPCGetter(agent.getTimeline),
+		rawAgent: agent,
+		sessionManager,
 	};
 	return fetcher;
 }

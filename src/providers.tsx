@@ -1,8 +1,8 @@
 import type { FC, PropsWithChildren, ReactNode } from "react";
-import { type ToastPosition, Toaster } from "react-hot-toast";
+import { Toaster, type ToastPosition } from "react-hot-toast";
+import { HomeFeedProvider } from "./lib/contexts/homefeed";
 import { ProfileProvider } from "./lib/contexts/profile";
 import { useMediaQueries } from "./lib/hooks/device";
-import { HomeFeedProvider } from "./lib/contexts/homefeed";
 
 type Provider<T> = [FC<T & { children: ReactNode }>, T];
 function createProviders<T extends object[]>(...providers: { [K in keyof T]: Provider<T[K]> }) {

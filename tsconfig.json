@@ -1,24 +1,24 @@
 {
 	"compilerOptions": {
-		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
-		"target": "ES2020",
-		"useDefineForClassFields": true,
+		"allowImportingTsExtensions": true,
+		"isolatedModules": true,
+		"jsx": "react-jsx",
 		"lib": ["ES2020", "DOM", "DOM.Iterable"],
 		"module": "ESNext",
-		"skipLibCheck": true,
+		"moduleDetection": "force",
 
 		/* Bundler mode */
 		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"isolatedModules": true,
-		"moduleDetection": "force",
 		"noEmit": true,
-		"jsx": "react-jsx",
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedSideEffectImports": true,
+		"skipLibCheck": true,
 
 		/* Linting */
 		"strict": true,
-		"noFallthroughCasesInSwitch": true,
-		"noUncheckedSideEffectImports": true
+		"target": "ES2020",
+		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
+		"useDefineForClassFields": true
 	},
 	"include": ["src", "units", "vite.config.ts"]
 }

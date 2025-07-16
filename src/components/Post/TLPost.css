@@ -2,36 +2,36 @@
 	border-top: 1px solid #ddd;
 	border-bottom: 1px solid #ddd;
 	& > .reason {
-		color: #555;
 		margin-left: 25px;
+		color: #555;
 	}
 }
 .tlpost {
 	display: flex;
 	& > .left {
 		display: flex;
-		flex-direction: column;
 		flex: 0;
+		flex-direction: column;
 		& > .avatar {
 			border-radius: 999px;
 		}
-		&>.replybar{
-			width: 0px;
+		& > .replybar {
 			flex-grow: 1;
-			margin-left: auto;
+			width: 0px;
 			margin-right: auto;
-			border: 2px solid #555;
 			margin-bottom: 1px;
+			margin-left: auto;
+			border: 2px solid #555;
 			border-radius: 999px;
 		}
-		&>.longreplybar {
+		& > .longreplybar {
+			flex: 0;
 			width: 0px;
 			height: 0px;
 			margin-top: 2px;
-			margin-bottom: 2px;
-			flex: 0;
-			margin-left: auto;
 			margin-right: auto;
+			margin-bottom: 2px;
+			margin-left: auto;
 			border: 2px solid #555;
 			border-radius: 999px;
 		}
@@ -42,22 +42,22 @@
 		& > .author {
 			display: flex;
 			& > .name {
-				font-weight: bold;
-				flex-shrink: 2;
 				flex-grow: 0;
+				flex-shrink: 2;
 				overflow: hidden;
 				text-overflow: ellipsis;
+				font-weight: bold;
 				white-space: nowrap;
 			}
 			& > .handle {
-				color: #555;
 				flex-shrink: 1;
 				overflow: hidden;
 				text-overflow: ellipsis;
+				color: #555;
 				white-space: nowrap;
 			}
 		}
-		&>.openthread{
+		& > .openthread {
 			color: blue;
 		}
 	}

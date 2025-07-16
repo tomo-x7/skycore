@@ -21,12 +21,12 @@ export function useMatches(): UseMatchesResult {
 	const isSelfProfile = useMatch("/profile/:did")?.params.did === fetcher.did;
 	const isSettings = useMatch("/settings") != null;
 	const matches: UseMatchesResult = {
+		isFeeds,
 		isHome,
-		isSearch,
+		isLists,
 		isMessages,
 		isNotifications,
-		isFeeds,
-		isLists,
+		isSearch,
 		isSelfProfile,
 		isSettings,
 	};

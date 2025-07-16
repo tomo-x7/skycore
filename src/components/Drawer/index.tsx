@@ -21,8 +21,8 @@ import "./style.css";
 function createNavItem({ close }: { close: () => void }) {
 	return ({ to, text, active, Icon }: { to: string; text: string; active: boolean; Icon: IconType }) => (
 		<li>
-			<Link to={to} onClick={close} className={active ? "active" : ""}>
-				<Icon size={25} className="icon" />
+			<Link className={active ? "active" : ""} onClick={close} to={to}>
+				<Icon className="icon" size={25} />
 				{text}
 			</Link>
 		</li>
@@ -37,11 +37,11 @@ export function Drawer() {
 	return (
 		<>
 			<span className="drawer-button">
-				<button type="button" onClick={() => setIsOpen(true)}>
+				<button onClick={() => setIsOpen(true)} type="button">
 					<GiHamburgerMenu size={30} />
 				</button>
 			</span>
-			<DrawerLib open={isopen} direction="left" onClose={() => setIsOpen(false)} size={300}>
+			<DrawerLib direction="left" onClose={() => setIsOpen(false)} open={isopen} size={300}>
 				<span className="drawer">
 					<div className="profile">
 						<img src={profile.avatar} />
@@ -54,19 +54,19 @@ export function Drawer() {
 					</div>
 					<div className="navlist">
 						<ul>
-							<NavItem to="/" text="ホーム" active={isHome} Icon={AiOutlineHome} />
-							<NavItem to="/search" text="検索" active={isSearch} Icon={AiOutlineSearch} />
-							<NavItem to="/messages" text="チャット" active={isMessages} Icon={AiOutlineMessage} />
-							<NavItem to="/notifications" text="通知" active={isNotifications} Icon={AiOutlineBell} />
-							<NavItem to="/feeds" text="フィード" active={isFeeds} Icon={HiOutlineHashtag} />
-							<NavItem to="/lists" text="リスト" active={isLists} Icon={AiOutlineUnorderedList} />
+							<NavItem active={isHome} Icon={AiOutlineHome} text="ホーム" to="/" />
+							<NavItem active={isSearch} Icon={AiOutlineSearch} text="検索" to="/search" />
+							<NavItem active={isMessages} Icon={AiOutlineMessage} text="チャット" to="/messages" />
+							<NavItem active={isNotifications} Icon={AiOutlineBell} text="通知" to="/notifications" />
+							<NavItem active={isFeeds} Icon={HiOutlineHashtag} text="フィード" to="/feeds" />
+							<NavItem active={isLists} Icon={AiOutlineUnorderedList} text="リスト" to="/lists" />
 							<NavItem
-								to={`/profile/${profile.did}`}
-								text="プロフィール"
 								active={isSelfProfile}
 								Icon={AiOutlineUser}
+								text="プロフィール"
+								to={`/profile/${profile.did}`}
 							/>
-							<NavItem to="/settings" text="設定" active={isSettings} Icon={AiOutlineSetting} />
+							<NavItem active={isSettings} Icon={AiOutlineSetting} text="設定" to="/settings" />
 						</ul>
 					</div>
 				</span>

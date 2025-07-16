@@ -1,5 +1,5 @@
-import { AppBskyActorDefs, AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
-import { ReasonRepost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
+import type { AppBskyActorDefs, AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
+import type { ReasonRepost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { FaRotate } from "react-icons/fa6";
 import "./TLPost.css";
 
@@ -17,7 +17,7 @@ export function TLPostThread({ data, feed }: { data: AppBskyFeedDefs.FeedViewPos
 			)}
 			{data.feedContext}
 			{isReply && <ReplyTree data={reply} />}
-			<TLPost post={data.post} isReply={isReply} />
+			<TLPost isReply={isReply} post={data.post} />
 		</div>
 	);
 }
@@ -44,13 +44,13 @@ function ReplyTree({ data }: { data: AppBskyFeedDefs.ReplyRef }) {
 	const root = data.root as AppBskyFeedDefs.PostView;
 	const parent = data.parent as AppBskyFeedDefs.PostView;
 	if (root.uri === parent.uri) {
-		return <TLPost post={parent} hasReply />;
+		return <TLPost hasReply post={parent} />;
 	}
 	const isLong = (parent.record as AppBskyFeedPost.Record).reply?.parent.uri !== root.uri;
 	return (
 		<>
-			<TLPost post={root} hasReply longReply={isLong} />
-			<TLPost post={parent} hasReply isReply />
+			<TLPost hasReply longReply={isLong} post={root} />
+			<TLPost hasReply isReply post={parent} />
 		</>
 	);
 }
@@ -60,11 +60,16 @@ function TLPost({
 	isReply,
 	hasReply,
 	longReply,
-}: { post: AppBskyFeedDefs.PostView; isReply?: boolean; hasReply?: boolean; longReply?: boolean }) {
+}: {
+	post: AppBskyFeedDefs.PostView;
+	isReply?: boolean;
+	hasReply?: boolean;
+	longReply?: boolean;
+}) {
 	return (
 		<div className="tlpost">
 			<div className="left">
-				<img className="avatar" width={32} height={32} src={post.author.avatar} alt="" />
+				<img alt="" className="avatar" height={32} src={post.author.avatar} width={32} />
 				{hasReply && <div className="replybar" />}
 				{longReply && (
 					<>

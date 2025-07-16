@@ -11,9 +11,9 @@ export function wrapFunction<Func extends (...args: any[]) => any>(
 	return async (...args) => {
 		try {
 			const response = await func(...args);
-			return { ok: true, data: response };
+			return { data: response, ok: true };
 		} catch (error) {
-			return { ok: false, error: String(error) };
+			return { error: String(error), ok: false };
 		}
 	};
 }
@@ -28,12 +28,12 @@ export function wrapXRPCFunction<Func extends (...args: any[]) => Promise<XRPCRe
 		try {
 			const response = await func(...args);
 			if (response.success) {
-				return { ok: true, data: response.data };
+				return { data: response.data, ok: true };
 			} else {
-				return { ok: false, error: JSON.stringify(response) };
+				return { error: JSON.stringify(response), ok: false };
 			}
 		} catch (error) {
-			return { ok: false, error: String(error) };
+			return { error: String(error), ok: false };
 		}
 	};
 }

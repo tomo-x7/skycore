@@ -18,22 +18,22 @@ export function MobileNewPostButton({ initText }: { initText?: string }) {
 	return (
 		<>
 			<button
-				type="button"
 				onClick={open}
 				style={{
-					position: "fixed",
 					backgroundColor: "blue",
 					border: 0,
 					borderRadius: 999,
-					width: 60,
-					height: 60,
 					bottom: isTablet ? 30 : 80,
+					height: 60,
+					position: "fixed",
 					right: 30,
+					width: 60,
 				}}
+				type="button"
 			>
 				<FaRegPenToSquare color="white" size={20} />
 			</button>
-			{isOpen && <NewPost initText={initText} close={close} />}
+			{isOpen && <NewPost close={close} initText={initText} />}
 		</>
 	);
 }

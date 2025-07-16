@@ -4,7 +4,7 @@ export function getRichTextView(text: string) {
 	const rt = new RichText({ text });
 	rt.detectFacetsWithoutResolution();
 	const facets = rt.facets ?? [];
-	const codeArr = Array.from(rt.unicodeText.utf8).map((c) => ({ c, blue: false }));
+	const codeArr = Array.from(rt.unicodeText.utf8).map((c) => ({ blue: false, c }));
 	for (const facet of facets) {
 		for (let i = facet.index.byteStart; i < facet.index.byteEnd; i++) {
 			if (codeArr[i] != null) codeArr[i].blue = true;
@@ -17,10 +17,10 @@ export function getRichTextView(text: string) {
 			if (last?.blue === c.blue) {
 				last.s = [...last.s, c.c];
 			} else {
-				p.push({ s: [c.c], blue: c.blue });
+				p.push({ blue: c.blue, s: [c.c] });
 			}
 			return p;
 		}, [])
-		.map((v) => ({ s: decoder.decode(new Uint8Array(v.s)), blue: v.blue }));
+		.map((v) => ({ blue: v.blue, s: decoder.decode(new Uint8Array(v.s)) }));
 	return view;
 }
