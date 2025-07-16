@@ -1,4 +1,6 @@
 {
+	"lexicon": 1,
+	"id": "win.tomo-x.atunits.unit",
 	"defs": {
 		"main": {
 			"description": "Definition for loading Units with ATUnits.",
@@ -6,7 +8,7 @@
 			"record": {
 				"properties": {
 					"libver": {
-						"description": "Supported library versions (such as React). Only `*` wildcard is allowed. Example: `react@19.*.*`",
+						"description": "Supported library versions (such as React). `React` indicates support for any version of React, while `React@19.0` indicates support for React 19.0.x.",
 						"items": {
 							"type": "string"
 						},
@@ -24,14 +26,16 @@
 							"type": "string"
 						},
 						"type": "array"
+					},
+					"name": {
+						"type": "string",
+						"description": "Name of the Unit"
 					}
 				},
-				"required": ["reactver", "target", "src"],
+				"required": ["libver", "target", "src"],
 				"type": "object"
 			},
 			"type": "record"
 		}
-	},
-	"id": "win.tomo-x.atunits.unit",
-	"lexicon": 1
+	}
 }
