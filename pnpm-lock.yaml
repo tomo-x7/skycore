@@ -19,12 +19,18 @@ importers:
       '@atproto/common-web':
         specifier: ^0.4.2
         version: 0.4.2
+      '@atproto/lexicon':
+        specifier: ^0.4.12
+        version: 0.4.12
       '@atproto/xrpc':
         specifier: ^0.7.0
         version: 0.7.0
       jwt-decode:
         specifier: ^4.0.0
         version: 4.0.0
+      multiformats:
+        specifier: ^13.3.7
+        version: 13.3.7
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -97,12 +103,6 @@ packages:
     resolution: {integrity: sha512-y+TWAQxp2KnuxhsfhGopf4Am6FryZScEdfs2T02F3d5DLDUO99XPsvjXarYrpL4lFhxmHZV1ir/1gRNNTgJ3JQ==}
     engines: {node: '>=18.7.0'}
     hasBin: true
-
-  '@atproto/lexicon@0.4.10':
-    resolution: {integrity: sha512-uDbP20vetBgtXPuxoyRcvOGBt2gNe1dFc9yYKcb6jWmXfseHiGTnIlORJOLBXIT2Pz15Eap4fLxAu6zFAykD5A==}
-
-  '@atproto/lexicon@0.4.11':
-    resolution: {integrity: sha512-btefdnvNz2Ao2I+qbmj0F06HC8IlrM/IBz6qOBS50r0S6uDf5tOO+Mv2tSVdimFkdzyDdLtBI1sV36ONxz2cOw==}
 
   '@atproto/lexicon@0.4.12':
     resolution: {integrity: sha512-fcEvEQ1GpQYF5igZ4IZjPWEoWVpsEF22L9RexxLS3ptfySXLflEyH384e7HITzO/73McDeaJx3lqHIuqn9ulnw==}
@@ -736,6 +736,9 @@ packages:
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
+  multiformats@13.3.7:
+    resolution: {integrity: sha512-meL9DERHj+fFVWoOX9fXqfcYcSpUfSYJPcFvDPKrxitICbwAoWR+Ut4j5NO9zAT917HUHLQmqzQbAsGNHlDcxQ==}
+
   multiformats@9.9.0:
     resolution: {integrity: sha512-HoMUjhH9T8DDBNT+6xzkrd9ga/XiBI4xLr58LJACwK6G3HTOPeMz4nB4KJs33L2BelrIJa7P0VuNaVF3hMYfjg==}
 
@@ -964,7 +967,7 @@ snapshots:
   '@atproto/api@0.14.19':
     dependencies:
       '@atproto/common-web': 0.4.2
-      '@atproto/lexicon': 0.4.10
+      '@atproto/lexicon': 0.4.12
       '@atproto/syntax': 0.4.0
       '@atproto/xrpc': 0.6.12
       await-lock: 2.2.2
@@ -990,22 +993,6 @@ snapshots:
       yesno: 0.4.0
       zod: 3.24.2
 
-  '@atproto/lexicon@0.4.10':
-    dependencies:
-      '@atproto/common-web': 0.4.2
-      '@atproto/syntax': 0.4.0
-      iso-datestring-validator: 2.2.2
-      multiformats: 9.9.0
-      zod: 3.24.2
-
-  '@atproto/lexicon@0.4.11':
-    dependencies:
-      '@atproto/common-web': 0.4.2
-      '@atproto/syntax': 0.4.0
-      iso-datestring-validator: 2.2.2
-      multiformats: 9.9.0
-      zod: 3.24.2
-
   '@atproto/lexicon@0.4.12':
     dependencies:
       '@atproto/common-web': 0.4.2
@@ -1018,12 +1005,12 @@ snapshots:
 
   '@atproto/xrpc@0.6.12':
     dependencies:
-      '@atproto/lexicon': 0.4.10
+      '@atproto/lexicon': 0.4.12
       zod: 3.24.2
 
   '@atproto/xrpc@0.7.0':
     dependencies:
-      '@atproto/lexicon': 0.4.11
+      '@atproto/lexicon': 0.4.12
       zod: 3.24.2
 
   '@babel/code-frame@7.26.2':
@@ -1539,6 +1526,8 @@ snapshots:
       brace-expansion: 2.0.2
 
   ms@2.1.3: {}
+
+  multiformats@13.3.7: {}
 
   multiformats@9.9.0: {}
 
