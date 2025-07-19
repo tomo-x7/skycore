@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@atproto/lex-cli':
+    hash: 504896bcd13b3bb831f927fe8237d1be22a4cfc122fe7ecbb5dab44c88d40a9c
+    path: patches/@atproto__lex-cli.patch
+
 importers:
 
   .:
@@ -52,8 +57,8 @@ importers:
         version: 3.24.2
     devDependencies:
       '@atproto/lex-cli':
-        specifier: ^0.9.0
-        version: 0.9.0
+        specifier: 0.9.0
+        version: 0.9.0(patch_hash=504896bcd13b3bb831f927fe8237d1be22a4cfc122fe7ecbb5dab44c88d40a9c)
       '@types/react':
         specifier: ^19.0.10
         version: 19.1.0
@@ -974,7 +979,7 @@ snapshots:
       uint8arrays: 3.0.0
       zod: 3.24.2
 
-  '@atproto/lex-cli@0.9.0':
+  '@atproto/lex-cli@0.9.0(patch_hash=504896bcd13b3bb831f927fe8237d1be22a4cfc122fe7ecbb5dab44c88d40a9c)':
     dependencies:
       '@atproto/lexicon': 0.4.12
       '@atproto/syntax': 0.4.0
