@@ -4,7 +4,7 @@
 import { type LexiconDoc, Lexicons, ValidationError, type ValidationResult } from "@atproto/lexicon";
 import { is$typed, maybe$typed } from "./util.js";
 
-const schemaDict = {
+export const schemaDict = {
 	WinTomo_xAtunitsUnit: {
 		lexicon: 1,
 		id: "win.tomo-x.atunits.unit",
@@ -49,7 +49,7 @@ const schemaDict = {
 		},
 	},
 } as const satisfies Record<string, LexiconDoc>;
-const schemas = Object.values(schemaDict) satisfies LexiconDoc[];
+export const schemas = Object.values(schemaDict) satisfies LexiconDoc[];
 export const lexicons: Lexicons = new Lexicons(schemas);
 
 export function validate<T extends { $type: string }>(
@@ -74,3 +74,7 @@ export function validate(v: unknown, id: string, hash: string, requiredType?: bo
 				),
 			};
 }
+
+export const ids = {
+	WinTomo_xAtunitsUnit: "win.tomo-x.atunits.unit",
+} as const;
