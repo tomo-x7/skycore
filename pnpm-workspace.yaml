@@ -1,2 +1,5 @@
+onlyBuiltDependencies:
+  - esbuild
+
 patchedDependencies:
   '@atproto/lex-cli': patches/@atproto__lex-cli.patch

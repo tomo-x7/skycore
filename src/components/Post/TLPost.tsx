@@ -3,6 +3,7 @@ import type { ReasonRepost } from "@atproto/api/dist/client/types/app/bsky/feed/
 import { FaRotate } from "react-icons/fa6";
 import "./TLPost.css";
 
+
 export function TLPostThread({ data, feed }: { data: AppBskyFeedDefs.FeedViewPost; feed: string }) {
 	const { reason, reply } = data;
 	const isReply = reason?.$type !== "app.bsky.feed.defs#reasonRepost" && reply != null;

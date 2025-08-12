@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 test.ts
+
+units_dist
