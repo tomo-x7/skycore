@@ -1,6 +1,6 @@
-import { AppBskyFeedDefs } from "@atproto/api";
-import { Fetcher } from "../src/fetcher";
-import React from "react";
+import type { AppBskyFeedDefs } from "@atproto/api";
+import type React from "react";
+import type { Fetcher } from "../src/fetcher";
 
 export type UnitDefaultArgs = {
 	React: typeof React;

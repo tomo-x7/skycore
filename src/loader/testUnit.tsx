@@ -4,7 +4,6 @@ import { UNIT_TEST_ARGS } from "./testArgs";
 import { UnitLoadFailedError, type Units } from "./types";
 import { generateDefaultUnitArgs } from "./util";
 
-
 export async function testUnit<K extends keyof Units>(key: K, Unit: Units[K], skip: boolean) {
 	if (skip)
 		return new Promise<void>((resolve, reject) => {

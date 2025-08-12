@@ -1,7 +1,6 @@
 import { useCallback, useState } from "react";
 import type { Loader, UnitUris } from "../loader/types";
 
-
 export function UnitConfig({ loader }: { loader: Loader }) {
 	loader.unitUris;
 	return (

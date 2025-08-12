@@ -3,7 +3,6 @@ import { AiOutlineBell, AiOutlineHome, AiOutlineMessage, AiOutlineSearch, AiOutl
 import { Link } from "react-router-dom";
 import { useMatches } from "../lib/hooks/match";
 
-
 const bottomBarIconStyle = (isCur: boolean) => ({ color: isCur ? "blue" : "black", size: 30 }) satisfies IconBaseProps;
 
 export function BottomBar() {

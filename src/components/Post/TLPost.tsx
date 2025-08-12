@@ -5,11 +5,10 @@ import "./TLPost.css";
 import { useLoader } from "../../lib/contexts/loader";
 import { generateDefaultUnitArgs } from "../../loader/util";
 
-
 export function TLPostThread({ data, feed }: { data: AppBskyFeedDefs.FeedViewPost; feed: string }) {
 	const { reason, reply } = data;
 	const isReply = reason?.$type !== "app.bsky.feed.defs#reasonRepost" && reply != null;
-	const loader=useLoader();
+	const loader = useLoader();
 	if (isReply && feed === "following" && shouldShowFollowingReply(reply, data.post.author) === false) return null;
 	const TLPost = loader.units.TLPost;
 	return (
@@ -61,5 +60,3 @@ function ReplyTree({ data }: { data: AppBskyFeedDefs.ReplyRef }) {
 		</>
 	);
 }
-
-

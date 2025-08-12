@@ -1,6 +1,5 @@
 import { Outlet } from "react-router-dom";
 import { useMediaQueries } from "../lib/hooks/device";
-import { Providers } from "../providers";
 import { BottomBar } from "./Bottombar";
 import { LeftNav } from "./DesktopNav/LeftNav";
 import { RightNav } from "./DesktopNav/RightNav";

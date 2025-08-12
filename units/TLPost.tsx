@@ -1,7 +1,6 @@
 import type { AppBskyFeedPost } from "@atproto/api";
 import type { UnitArgs } from "./type";
-export default function TLPost({ post, isReply, hasReply, longReply,React}: UnitArgs["TLPost"]) {
-	
+export default function TLPost({ post, isReply, hasReply, longReply, React }: UnitArgs["TLPost"]) {
 	return (
 		<div className="tlpost">
 			<div className="left">

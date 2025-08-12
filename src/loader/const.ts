@@ -1,5 +1,5 @@
 import { AtUri } from "@atproto/api";
-import type { UnitUris,  } from "./types";
+import type { UnitUris } from "./types";
 
 export const UNIT_KEYS = ["TLPost"] as const;
 export const DEFAULT_UNIT_URIS: UnitUris = {
@@ -9,6 +9,6 @@ export const UNIT_URIS_KEY = "UNIT_URIS";
 
 export const REACT_VER = "React@19.1.1" as const;
 
-export const UNIT_VERS: {[k in typeof UNIT_KEYS[number]]: string} = {
+export const UNIT_VERS: { [k in (typeof UNIT_KEYS)[number]]: string } = {
 	TLPost: "win.tomo-x.skycore.unit.TLPostv1",
 };

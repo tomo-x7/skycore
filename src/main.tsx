@@ -8,7 +8,6 @@ import { About } from "./otherpages/about.tsx";
 import { Login } from "./otherpages/login.tsx";
 import { UnitConfig } from "./pages/unitConfig.tsx";
 
-
 async function init() {
 	if (location.pathname.startsWith("/login")) {
 		createRoot(document.getElementById("root")!).render(

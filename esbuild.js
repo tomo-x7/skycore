@@ -2,7 +2,6 @@
 
 import * as esbuild from "esbuild";
 
-
 const isProd = process.env.NODE_ENV === "production";
 await esbuild.build({
 	bundle: true,
@@ -12,5 +11,5 @@ await esbuild.build({
 	minify: isProd,
 	outdir: "units_dist",
 	sourcemap: !isProd,
-	tsconfig: "./tsconfig.units.json"
+	tsconfig: "./tsconfig.units.json",
 });

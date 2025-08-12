@@ -17,7 +17,7 @@
 		"strict": true,
 		"target": "ES2020",
 		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.units.tsbuildinfo",
-		"useDefineForClassFields": true,
+		"useDefineForClassFields": true
 	},
-	"include": ["units","src/fetcher"]
+	"include": ["units", "src/fetcher"]
 }
