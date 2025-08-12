@@ -2,12 +2,16 @@ import type { AppBskyActorDefs, AppBskyFeedDefs, AppBskyFeedPost } from "@atprot
 import type { ReasonRepost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { FaRotate } from "react-icons/fa6";
 import "./TLPost.css";
+import { useLoader } from "../../lib/contexts/loader";
+import { generateDefaultUnitArgs } from "../../loader/util";
 
 
 export function TLPostThread({ data, feed }: { data: AppBskyFeedDefs.FeedViewPost; feed: string }) {
 	const { reason, reply } = data;
 	const isReply = reason?.$type !== "app.bsky.feed.defs#reasonRepost" && reply != null;
+	const loader=useLoader();
 	if (isReply && feed === "following" && shouldShowFollowingReply(reply, data.post.author) === false) return null;
+	const TLPost = loader.units.TLPost;
 	return (
 		<div className="tlthread">
 			{reason?.$type === "app.bsky.feed.defs#reasonRepost" && (
@@ -18,7 +22,7 @@ export function TLPostThread({ data, feed }: { data: AppBskyFeedDefs.FeedViewPos
 			)}
 			{data.feedContext}
 			{isReply && <ReplyTree data={reply} />}
-			<TLPost isReply={isReply} post={data.post} />
+			<TLPost isReply={isReply} post={data.post} {...generateDefaultUnitArgs()} />
 		</div>
 	);
 }
@@ -40,55 +44,22 @@ function shouldShowFollowingReply(data: AppBskyFeedDefs.ReplyRef, author: AppBsk
 }
 
 function ReplyTree({ data }: { data: AppBskyFeedDefs.ReplyRef }) {
+	const loader = useLoader();
+	const TLPost = loader.units.TLPost;
 	if (data.root.$type !== "app.bsky.feed.defs#postView" || data.parent.$type !== "app.bsky.feed.defs#postView")
 		return null;
 	const root = data.root as AppBskyFeedDefs.PostView;
 	const parent = data.parent as AppBskyFeedDefs.PostView;
 	if (root.uri === parent.uri) {
-		return <TLPost hasReply post={parent} />;
+		return <TLPost hasReply post={parent} {...generateDefaultUnitArgs()} />;
 	}
 	const isLong = (parent.record as AppBskyFeedPost.Record).reply?.parent.uri !== root.uri;
 	return (
 		<>
-			<TLPost hasReply longReply={isLong} post={root} />
-			<TLPost hasReply isReply post={parent} />
+			<TLPost hasReply longReply={isLong} post={root} {...generateDefaultUnitArgs()} />
+			<TLPost hasReply isReply post={parent} {...generateDefaultUnitArgs()} />
 		</>
 	);
 }
 
-function TLPost({
-	post,
-	isReply,
-	hasReply,
-	longReply,
-}: {
-	post: AppBskyFeedDefs.PostView;
-	isReply?: boolean;
-	hasReply?: boolean;
-	longReply?: boolean;
-}) {
-	return (
-		<div className="tlpost">
-			<div className="left">
-				<img alt="" className="avatar" height={32} src={post.author.avatar} width={32} />
-				{hasReply && <div className="replybar" />}
-				{longReply && (
-					<>
-						<div className="longreplybar" />
-						<div className="longreplybar" />
-						<div className="longreplybar" />
-					</>
-				)}
-			</div>
-			<div className="content">
-				<div className="author">
-					<div className="name">{post.author.displayName ?? post.author.handle}</div>
-					<div className="handle">@{post.author.handle ?? post.author.did}</div>
-				</div>
-				<div className="text">{(post.record as AppBskyFeedPost.Record).text}</div>
 
-				{longReply && <div className="openthread">スレッドをすべて表示</div>}
-			</div>
-		</div>
-	);
-}

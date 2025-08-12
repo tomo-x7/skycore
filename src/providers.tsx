@@ -3,6 +3,8 @@ import { Toaster, type ToastPosition } from "react-hot-toast";
 import { HomeFeedProvider } from "./lib/contexts/homefeed";
 import { ProfileProvider } from "./lib/contexts/profile";
 import { useMediaQueries } from "./lib/hooks/device";
+import { Loader } from "./loader/types";
+import { LoaderProvider } from "./lib/contexts/loader";
 
 type Provider<T> = [FC<T & { children: ReactNode }>, T];
 function createProviders<T extends object[]>(...providers: { [K in keyof T]: Provider<T[K]> }) {
@@ -19,10 +21,10 @@ function reduce<T extends object[]>(
 	return providersArr.reduceRight(reducer, init);
 }
 
-export function Providers({ children }: PropsWithChildren<Record<string, unknown>>) {
+export function Providers({ children,loader }: PropsWithChildren<{loader:Loader}>) {
 	const { isMobile } = useMediaQueries();
 	const toastPosition = (isMobile ? "bottom-center" : "bottom-left") satisfies ToastPosition;
-	const providersArr = createProviders([ProfileProvider, {}], [HomeFeedProvider, {}]);
+	const providersArr = createProviders([ProfileProvider, {}], [HomeFeedProvider, {}],[LoaderProvider, { loader }]);
 	return (
 		<>
 			{reduce(providersArr, mapProvider, children)}

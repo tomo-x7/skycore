@@ -7,7 +7,7 @@ import { RightNav } from "./DesktopNav/RightNav";
 
 export function MainLayout() {
 	const { isMobile } = useMediaQueries();
-	return <Providers>{isMobile ? <MobileLayout /> : <DesktopLayout />}</Providers>;
+	return <>{isMobile ? <MobileLayout /> : <DesktopLayout />}</>;
 }
 function DesktopLayout() {
 	const { isDesktop } = useMediaQueries();

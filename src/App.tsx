@@ -1,6 +1,8 @@
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
 import { MainLayout } from "./components/Layout";
 import { Home } from "./pages/home";
+import { Loader } from "./loader/types";
+import { Providers } from "./providers";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -20,6 +22,6 @@ const router = createBrowserRouter(
 	),
 );
 
-export function App() {
-	return <RouterProvider router={router} />;
+export function App({loader}:{loader:Loader}) {
+	return <Providers loader={loader}><RouterProvider router={router} /></Providers>;
 }

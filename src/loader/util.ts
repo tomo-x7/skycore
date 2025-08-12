@@ -1,5 +1,6 @@
 import { Agent, AtUri, type ComAtprotoRepoGetRecord } from "@atproto/api";
-import type { DidDocument } from "@atproto/common-web";
+import {getHandle, getPdsEndpoint, isValidDidDoc} from "@atproto/common-web";
+import {DidResolver,MemoryCache} from "@atproto/identity"
 
 import { WinTomoXAtunitsUnit as UnitRecord } from "../lexicons";
 import { DEFAULT_UNIT_URIS, REACT_VER, UNIT_KEYS, UNIT_URIS_KEY, UNIT_VERS } from "./const";
@@ -7,17 +8,14 @@ import { type SavedUnitUris, type UnitDefaultArgs, UnitLoadFailedError, type Uni
 import * as JSXNS from "react/jsx-runtime";
 import React from "react";
 
-const publicAgent = new Agent(new URL("https://public.api.bsky.app"));
+const didResolver=new DidResolver({didCache: new MemoryCache()});
 async function resolveDidToPds(did: string) {
-	const res = await publicAgent.com.atproto.identity.resolveDid({ did });
-	if (!res.success) throw new Error(String(res.data));
-	const didDoc = res.data.didDoc as DidDocument;
-	const pds = didDoc.service?.find(
-		({ id, type }) => id === "#atproto_pds" && type === "AtprotoPersonalDataServer",
-	)?.serviceEndpoint;
+	const res = await didResolver.resolve(did,)
+	if(res==null)throw new Error(`Failed to resolve DID: ${did}`);
+	const pds=getPdsEndpoint(res)
+	const handle=getHandle(res);
 	if (!pds) throw new Error("No PDS endpoint found in DID document");
 	if (typeof pds !== "string") throw new Error("PDS endpoint is not a string");
-	const handle = didDoc.alsoKnownAs?.[0];
 	return { pds, handle };
 }
 

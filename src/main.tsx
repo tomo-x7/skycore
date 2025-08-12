@@ -38,7 +38,7 @@ async function init() {
 		return;
 	}
 	// splash作ったらそこに移行
-	loader.loadUnits((message) => console.log(message));
+	await loader.loadUnits((message) => console.log(message));
 	const fetcher = await createFetcher();
 	if (fetcher == null) {
 		location.href = "/login";
@@ -49,7 +49,7 @@ async function init() {
 	createRoot(document.getElementById("root")!).render(
 		<StrictMode>
 			<Suspense fallback={<>loading...</>}>
-				<App />
+				<App loader={loader} />
 			</Suspense>
 		</StrictMode>,
 	);
