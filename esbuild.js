@@ -3,7 +3,7 @@
 import fs from "node:fs";
 import * as esbuild from "esbuild";
 
-fs.rmSync("units_dist", { recursive: true });
+fs.rmSync("units_dist", { recursive: true, force: true });
 
 const isProd = process.env.NODE_ENV === "production";
 await esbuild.build({
