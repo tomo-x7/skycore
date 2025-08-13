@@ -1,7 +1,7 @@
 import type { AtUri } from "@atproto/api";
 import { UNIT_KEYS } from "./const";
 import { testUnit } from "./testUnit";
-import { type Loader, UnitLoadFailedError, UnitModule, type Units, type UnitUris } from "./types";
+import { type Loader, UnitLoadFailedError, type UnitModule, type Units, type UnitUris } from "./types";
 import { loadCSSs, loadUnitConfig, loadUnitCSS, loadUnitRecord, validateUnitRecord } from "./util";
 
 export const loader: Loader = {

@@ -12,5 +12,5 @@ export type RawUnitArgs = {
 export type UnitArgs = { [K in keyof RawUnitArgs]: RawUnitArgs[K] & UnitDefaultArgs };
 
 export type UnitConfig = {
-	css?: (string|URL)[] | ((url: URL) => (string|URL)[]);
+	css?: (string | URL)[] | ((url: URL) => (string | URL)[]);
 };

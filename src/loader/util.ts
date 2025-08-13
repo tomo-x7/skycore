@@ -6,7 +6,7 @@ import { WinTomoXAtunitsUnit as UnitRecord } from "../lexicons";
 import { DEFAULT_UNIT_URIS, REACT_VER, UNIT_KEYS, UNIT_URIS_KEY, UNIT_VERS } from "./const";
 import {
 	type SavedUnitUris,
-	UnitConfig,
+	type UnitConfig,
 	type UnitDefaultArgs,
 	UnitLoadFailedError,
 	type Units,
@@ -120,7 +120,7 @@ function parseCSSUrl(srcUrl: URL, cssUrl: string | URL) {
 }
 
 export function loadCSSs(urls: string[]) {
-	const elements:HTMLLinkElement[]=[]
+	const elements: HTMLLinkElement[] = [];
 	for (const url of urls) {
 		const link = document.createElement("link");
 		link.rel = "stylesheet";

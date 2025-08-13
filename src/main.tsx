@@ -9,7 +9,7 @@ import { Login } from "./otherpages/login.tsx";
 import { UnitConfig } from "./pages/unitConfig.tsx";
 
 async function init() {
-	const root=createRoot(document.getElementById("root")!);
+	const root = createRoot(document.getElementById("root")!);
 	if (location.pathname.startsWith("/login")) {
 		root.render(
 			<StrictMode>
@@ -48,7 +48,7 @@ async function init() {
 	globalThis.goTop = () => void 0;
 	root.render(
 		<StrictMode>
-				<App loader={loader} />
+			<App loader={loader} />
 		</StrictMode>,
 	);
 }

@@ -2,7 +2,7 @@ import type { AppBskyFeedPost } from "@atproto/api";
 import type { UnitArgs, UnitConfig } from "./type";
 export default function TLPost({ post, isReply, hasReply, longReply, React }: UnitArgs["TLPost"]) {
 	return (
-		<div className="tlpost">
+		<div className="win-tomo-x-skycore-units-tlpost">
 			<div className="left">
 				<img alt="" className="avatar" height={32} src={post.author.avatar} width={32} />
 				{hasReply && <div className="replybar" />}

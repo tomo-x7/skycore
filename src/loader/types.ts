@@ -36,7 +36,7 @@ export class UnitLoadFailedError extends Error {
 	}
 }
 
-export type UnitModule<K extends typeof UNIT_KEYS[number]>={
-	default:Unit<UnitArgs[K]>;
+export type UnitModule<K extends (typeof UNIT_KEYS)[number]> = {
+	default: Unit<UnitArgs[K]>;
 	config?: UnitConfig;
-}
+};

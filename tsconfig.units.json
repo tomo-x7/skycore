@@ -3,13 +3,13 @@
 		"target": "esnext",
 		"isolatedModules": true,
 		"jsx": "react",
-		"lib": ["ESNext","DOM", "DOM.Iterable"],
+		"lib": ["ESNext", "DOM", "DOM.Iterable"],
 		"module": "ESNext",
 		"moduleDetection": "force",
 
 		/* Bundler mode */
 		"moduleResolution": "bundler",
-		"noEmit": true,
+		"noEmit": false,
 		"noFallthroughCasesInSwitch": true,
 		"noUncheckedSideEffectImports": true,
 		"skipLibCheck": true,
