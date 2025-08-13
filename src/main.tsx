@@ -9,8 +9,9 @@ import { Login } from "./otherpages/login.tsx";
 import { UnitConfig } from "./pages/unitConfig.tsx";
 
 async function init() {
+	const root=createRoot(document.getElementById("root")!);
 	if (location.pathname.startsWith("/login")) {
-		createRoot(document.getElementById("root")!).render(
+		root.render(
 			<StrictMode>
 				<Login />
 			</StrictMode>,
@@ -18,7 +19,7 @@ async function init() {
 		return;
 	}
 	if (location.pathname.startsWith("/about")) {
-		createRoot(document.getElementById("root")!).render(
+		root.render(
 			<StrictMode>
 				<About />
 			</StrictMode>,
@@ -27,7 +28,7 @@ async function init() {
 	}
 	if (location.pathname.startsWith("/unitConfig")) {
 		loader.loadUnitUris();
-		createRoot(document.getElementById("root")!).render(
+		root.render(
 			<StrictMode>
 				<Suspense fallback={<>loading...</>}>
 					<UnitConfig loader={loader} />
@@ -45,11 +46,9 @@ async function init() {
 	}
 	globalThis.fetcher = fetcher;
 	globalThis.goTop = () => void 0;
-	createRoot(document.getElementById("root")!).render(
+	root.render(
 		<StrictMode>
-			<Suspense fallback={<>loading...</>}>
 				<App loader={loader} />
-			</Suspense>
 		</StrictMode>,
 	);
 }

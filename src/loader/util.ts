@@ -4,7 +4,14 @@ import { DidResolver, MemoryCache } from "@atproto/identity";
 import React from "react";
 import { WinTomoXAtunitsUnit as UnitRecord } from "../lexicons";
 import { DEFAULT_UNIT_URIS, REACT_VER, UNIT_KEYS, UNIT_URIS_KEY, UNIT_VERS } from "./const";
-import { type SavedUnitUris, type UnitDefaultArgs, UnitLoadFailedError, type Units, type UnitUris } from "./types";
+import {
+	type SavedUnitUris,
+	UnitConfig,
+	type UnitDefaultArgs,
+	UnitLoadFailedError,
+	type Units,
+	type UnitUris,
+} from "./types";
 
 const didResolver = new DidResolver({ didCache: new MemoryCache() });
 async function resolveDidToPds(did: string) {
@@ -84,4 +91,41 @@ export function generateDefaultUnitArgs(): UnitDefaultArgs {
 		React: React,
 		fetcher: globalThis.fetcher,
 	};
+}
+
+export function loadUnitCSS(srcUrl: URL, cssConfig?: UnitConfig["css"]) {
+	try {
+		if (cssConfig == null) return [];
+		if (Array.isArray(cssConfig))
+			return cssConfig.map((url) => parseCSSUrl(srcUrl, url)).filter((url) => url != null);
+		if (typeof cssConfig === "function") {
+			return cssConfig(srcUrl)
+				.map((url) => parseCSSUrl(srcUrl, url))
+				.filter((url) => url != null);
+		}
+	} catch (e) {
+		console.warn("Failed to load unit CSS", e);
+	}
+	return [];
+}
+
+function parseCSSUrl(srcUrl: URL, cssUrl: string | URL) {
+	try {
+		if (typeof cssUrl === "string") return new URL(cssUrl, srcUrl).toString();
+		if (typeof cssUrl === "object" && cssUrl instanceof URL) return cssUrl.toString();
+	} catch (e) {
+		console.warn("Failed to parse CSS URL", cssUrl, "from", srcUrl, e);
+	}
+	return null;
+}
+
+export function loadCSSs(urls: string[]) {
+	const elements:HTMLLinkElement[]=[]
+	for (const url of urls) {
+		const link = document.createElement("link");
+		link.rel = "stylesheet";
+		link.href = url;
+		elements.push(link);
+	}
+	document.head.append(...elements);
 }

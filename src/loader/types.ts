@@ -1,6 +1,6 @@
 import type { AtUri } from "@atproto/api";
 import type React from "react";
-import type { UnitArgs } from "../../units/type";
+import type { UnitArgs, UnitConfig } from "../../units/type";
 import type { UNIT_KEYS } from "./const";
 
 export type * from "../../units/type";
@@ -34,4 +34,9 @@ export class UnitLoadFailedError extends Error {
 	) {
 		super(message);
 	}
+}
+
+export type UnitModule<K extends typeof UNIT_KEYS[number]>={
+	default:Unit<UnitArgs[K]>;
+	config?: UnitConfig;
 }

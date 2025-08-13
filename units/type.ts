@@ -10,3 +10,7 @@ export type RawUnitArgs = {
 	TLPost: { post: AppBskyFeedDefs.PostView; isReply?: boolean; hasReply?: boolean; longReply?: boolean };
 };
 export type UnitArgs = { [K in keyof RawUnitArgs]: RawUnitArgs[K] & UnitDefaultArgs };
+
+export type UnitConfig = {
+	css?: (string|URL)[] | ((url: URL) => (string|URL)[]);
+};
