@@ -4,11 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-patchedDependencies:
-  '@atproto/lex-cli':
-    hash: 504896bcd13b3bb831f927fe8237d1be22a4cfc122fe7ecbb5dab44c88d40a9c
-    path: patches/@atproto__lex-cli.patch
-
 importers:
 
   .:
@@ -67,7 +62,7 @@ importers:
     devDependencies:
       '@atproto/lex-cli':
         specifier: 0.9.0
-        version: 0.9.0(patch_hash=504896bcd13b3bb831f927fe8237d1be22a4cfc122fe7ecbb5dab44c88d40a9c)
+        version: 0.9.0
       '@biomejs/biome':
         specifier: 2.1.1
         version: 2.1.1
@@ -1094,7 +1089,7 @@ snapshots:
       '@atproto/common-web': 0.4.2
       '@atproto/crypto': 0.4.4
 
-  '@atproto/lex-cli@0.9.0(patch_hash=504896bcd13b3bb831f927fe8237d1be22a4cfc122fe7ecbb5dab44c88d40a9c)':
+  '@atproto/lex-cli@0.9.0':
     dependencies:
       '@atproto/lexicon': 0.4.12
       '@atproto/syntax': 0.4.0
