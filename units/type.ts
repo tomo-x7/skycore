@@ -1,16 +1,16 @@
-import type { AppBskyFeedDefs } from "@atproto/api";
 import type React from "react";
 import type { Fetcher } from "../src/fetcher";
+import type { UnitList } from "./config";
 
 export type UnitDefaultArgs = {
 	React: typeof React;
 	fetcher: Fetcher;
 };
-export type RawUnitArgs = {
-	TLPost: { post: AppBskyFeedDefs.PostView; isReply?: boolean; hasReply?: boolean; longReply?: boolean };
-};
-export type UnitArgs = { [K in keyof RawUnitArgs]: RawUnitArgs[K] & UnitDefaultArgs };
+export type RawUnitArgs = { [K in keyof UnitList]: UnitList[K] };
+export type UnitArgs = { [K in keyof UnitList]: UnitList[K] & UnitDefaultArgs };
 
 export type UnitConfig = {
 	css?: (string | URL)[] | ((url: URL) => (string | URL)[]);
 };
+
+type inferArgs<T extends object | object[]> = T extends Array<infer U> ? U : T;

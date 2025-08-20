@@ -1,15 +1,21 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { UNIT_TEST_ARGS } from "./testArgs";
-import { UnitLoadFailedError, type Units } from "./types";
+import type { UnitList } from "../../units/config";
+import { type Unit, type UnitDefaultArgs, UnitLoadFailedError } from "./types";
 import { generateDefaultUnitArgs } from "./util";
 
-export async function testUnit<K extends keyof Units>(key: K, Unit: Units[K], skip: boolean) {
+export async function testUnit<K extends keyof UnitList, T extends object>(
+	key: K,
+	Unit: Unit<T & UnitDefaultArgs>,
+	args: T,
+	skip: boolean,
+) {
 	if (skip)
 		return new Promise<void>((resolve, reject) => {
 			if (typeof Unit !== "function") reject(new UnitLoadFailedError(key, "test", "Unit is not a function"));
 			resolve();
 		});
+
 	return new Promise<void>((resolve, rejectInner) => {
 		const timer = setTimeout(() => resolve(), 10 * 1000);
 		const reject = (e: unknown) => {
@@ -18,10 +24,11 @@ export async function testUnit<K extends keyof Units>(key: K, Unit: Units[K], sk
 		};
 		try {
 			const el = document.createElement("div");
+
 			// const args=UNIT_TEST_ARGS[key];
 			createRoot(el, { onUncaughtError: reject, onCaughtError: reject, onRecoverableError: reject }).render(
 				<StrictMode>
-					<Unit {...generateDefaultUnitArgs()} {...(UNIT_TEST_ARGS[key] as any)} />
+					<Unit {...args} {...generateDefaultUnitArgs()} />
 				</StrictMode>,
 			);
 		} catch (e) {

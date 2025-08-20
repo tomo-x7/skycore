@@ -65,4 +65,7 @@ export const UNIT_TEST_ARGS: RawUnitArgs = {
 		hasReply: undefined,
 		longReply: undefined,
 	},
+	embed: {
+		uri: "",
+	},
 };

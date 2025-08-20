@@ -1,70 +1,82 @@
-import type { AtUri } from "@atproto/api";
-import { UNIT_KEYS } from "./const";
-import { testUnit } from "./testUnit";
-import { type Loader, UnitLoadFailedError, type UnitModule, type Units, type UnitUris } from "./types";
-import { loadCSSs, loadUnitConfig, loadUnitCSS, loadUnitRecord, validateUnitRecord } from "./util";
+import { MULTI_UNIT_KEYS, SINGLE_UNIT_KEYS } from "../../units/config";
+import { UNIT_TEST_ARGS } from "./testArgs";
+import {
+	type Loader,
+	type logger,
+	type MultiUnits,
+	type SingleUnits,
+	UnitLoadFailedError,
+	type Units,
+	type UnitUris,
+} from "./types";
+import { loadCSSs, loadUnit, loadUnitConfig } from "./util";
 
-export const loader: Loader = {
-	_units: undefined,
-	_unitUris: undefined,
-	get units(): Units {
-		if (this._units == null) throw new Error("Units not loaded");
-		return this._units;
-	},
-	get unitUris(): UnitUris {
-		if (this._unitUris == null) throw new Error("Unit URIs not loaded");
-		return this._unitUris;
-	},
-	async loadUnits(log: (message: string) => void): Promise<boolean> {
-		const unitUris = loadUnitConfig();
-		this._unitUris = unitUris;
-		const units = {} as Units;
-		let success = true;
+export function createLoader(): Loader {
+	let units: Units | null = null;
+	const unitUris = loadUnitConfig();
+	const loadUnitsInner = async (log: logger, skipTest: boolean, loadUnitUris: UnitUris = unitUris) => {
+		const singleUnit = {} as SingleUnits;
+		const multiUnit = {} as MultiUnits;
 		const cssUrls: string[] = [];
-		for (const key of UNIT_KEYS) {
-			try {
-				const record = await loadUnitRecord(key, unitUris[key]);
-				const validateResult = validateUnitRecord(key, record);
-				if (validateResult.result === "warn") log(`[warn][${key}] ${validateResult.message}`);
-				const unitModule: UnitModule<typeof key> = await import(/* @vite-ignore */ record.src).then(
-					(mod) => mod,
+		const promises: Promise<unknown>[] = [];
+		const registerCss = (urls: string[]) => cssUrls.push(...urls);
+		try {
+			for (const key of SINGLE_UNIT_KEYS) {
+				const p = loadUnit(
+					key,
+					loadUnitUris[key],
+					(unit) => {
+						singleUnit[key] = unit;
+					},
+					registerCss,
+					skipTest,
+					UNIT_TEST_ARGS[key],
+					log,
 				);
-				await testUnit(key, unitModule.default, true);
-				units[key] = unitModule.default;
-				cssUrls.push(...loadUnitCSS(new URL(record.src), unitModule.config?.css));
-			} catch (e) {
-				success = false;
-				if (e instanceof UnitLoadFailedError) {
-					log(`[error][${e.key}][${e.context}] ${e.message}`);
-				} else {
-					log(`[error][${key}][unknown] ${String(e)}`);
+				promises.push(p);
+			}
+			for (const key of MULTI_UNIT_KEYS) {
+				for (const uri of loadUnitUris[key]) {
+					const p = loadUnit(
+						key,
+						uri,
+						(unit) => {
+							if (multiUnit[key] == null) multiUnit[key] = [];
+							multiUnit[key].push(unit);
+						},
+						registerCss,
+						skipTest,
+						UNIT_TEST_ARGS[key],
+						log,
+					);
+					promises.push(p);
 				}
 			}
-		}
-		if (!success) return false;
-		this._units = units;
-		loadCSSs(cssUrls);
-		return success;
-	},
-	async updateUnit(key: keyof Units, newUri: AtUri, log: (message: string) => void): Promise<boolean> {
-		let success = true;
-		try {
-			const record = await loadUnitRecord(key, newUri);
-			const validateResult = validateUnitRecord(key, record);
-			if (validateResult.result === "warn") log(`[warn][${key}] ${validateResult.message}`);
-			const unit = await import(record.src).then((mod) => mod.default);
-			await testUnit(key, unit, false);
+			loadCSSs(cssUrls);
+			await Promise.all(promises);
+			units = { ...singleUnit, ...multiUnit };
+			return true;
 		} catch (e) {
-			success = false;
 			if (e instanceof UnitLoadFailedError) {
 				log(`[error][${e.key}][${e.context}] ${e.message}`);
 			} else {
-				log(`[error][${key}][unknown] ${String(e)}`);
+				log(`[error][unknown] ${String(e)}`);
 			}
+			return false;
 		}
-		throw new Error("Function not implemented.");
-	},
-	loadUnitUris(): void {
-		this._unitUris = loadUnitConfig();
-	},
-};
+	};
+
+	return {
+		get units() {
+			if (units == null) throw new Error("Units not loaded");
+			return units;
+		},
+		unitUris,
+		loadUnits: (log: logger): Promise<boolean> => loadUnitsInner(log, false),
+		updateUnit: async (unitUris: UnitUris, log: logger): Promise<boolean> => {
+			const success = await loadUnitsInner(log, false, unitUris);
+			if (success === false) return false;
+			throw new Error("Function not implemented.");
+		},
+	};
+}

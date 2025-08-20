@@ -2,13 +2,20 @@ import { AtUri, type ComAtprotoRepoGetRecord } from "@atproto/api";
 import { getHandle, getPdsEndpoint } from "@atproto/common-web";
 import { DidResolver, MemoryCache } from "@atproto/identity";
 import React from "react";
+import { isMultiUnit, type MultiUnitList, UNIT_KEYS, type UnitList } from "../../units/config";
 import { WinTomoXAtunitsUnit as UnitRecord } from "../lexicons";
-import { DEFAULT_UNIT_URIS, REACT_VER, UNIT_KEYS, UNIT_URIS_KEY, UNIT_VERS } from "./const";
+import { DEFAULT_UNIT_URIS, REACT_VER, UNIT_URIS_KEY, UNIT_VERS } from "./const";
+import { testUnit } from "./testUnit";
 import {
+	type logger,
+	type MultiUnitUris,
 	type SavedUnitUris,
+	type SingleUnitUris,
+	type Unit,
 	type UnitConfig,
 	type UnitDefaultArgs,
 	UnitLoadFailedError,
+	type UnitModule,
 	type Units,
 	type UnitUris,
 } from "./types";
@@ -22,6 +29,24 @@ async function resolveDidToPds(did: string) {
 	if (!pds) throw new Error("No PDS endpoint found in DID document");
 	if (typeof pds !== "string") throw new Error("PDS endpoint is not a string");
 	return { pds, handle };
+}
+
+export async function loadUnit<K extends keyof Units, T extends object>(
+	key: K,
+	uri: AtUri,
+	registerUnit: (unit: Unit<T & UnitDefaultArgs>) => void,
+	registerCss: (url: string[]) => void,
+	skipTest: boolean,
+	testArgs: T,
+	log: logger,
+) {
+	const record = await loadUnitRecord(key, uri);
+	const validateResult = validateUnitRecord(key, record);
+	if (validateResult.result === "warn") log(`[warn][${key}] ${validateResult.message}`);
+	const unitModule: UnitModule<T> = await import(/* @vite-ignore */ record.src);
+	await testUnit<K, T>(key, unitModule.default, testArgs, skipTest);
+	registerUnit(unitModule.default);
+	registerCss(loadUnitCSS(new URL(record.src), unitModule.config?.css));
 }
 
 export async function loadUnitRecord(key: keyof Units, uri: AtUri): Promise<UnitRecord.Record> {
@@ -48,16 +73,33 @@ export function loadUnitConfig(): UnitUris {
 		const saved = localStorage.getItem(UNIT_URIS_KEY);
 		if (!saved) return DEFAULT_UNIT_URIS;
 		const parsed = JSON.parse(saved) as SavedUnitUris;
-		const result = {} as UnitUris;
+		const multiResult = {} as MultiUnitUris;
+		const singleResult = {} as SingleUnitUris;
 		for (const key of UNIT_KEYS) {
-			result[key] = parsed[key] ? new AtUri(parsed[key]) : DEFAULT_UNIT_URIS[key];
+			if (isKeyMultiUnit(key)) {
+				multiResult[key] = parseMultiUnitUris(parsed[key]) ?? DEFAULT_UNIT_URIS[key];
+			} else {
+				singleResult[key] = parsed[key] ? new AtUri(parsed[key]) : DEFAULT_UNIT_URIS[key];
+			}
 		}
-		return result;
+		return { ...multiResult, ...singleResult };
 	} catch (e) {
 		console.error("Failed to load unit config from localStorage", e);
 		return DEFAULT_UNIT_URIS;
 	}
 }
+export function isKeyMultiUnit(key: keyof UnitList): key is keyof MultiUnitList {
+	return isMultiUnit[key] === true;
+}
+function parseMultiUnitUris(uris: string | undefined) {
+	if (uris == null) return null;
+	try {
+		return uris.split(",").map((uri) => new AtUri(uri.trim()));
+	} catch (e) {
+		return null;
+	}
+}
+
 export function updateUnitConfig(key: keyof UnitUris, uri: AtUri) {}
 
 export function validateUnitRecord(

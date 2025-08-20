@@ -1,34 +1,39 @@
 import type { AtUri } from "@atproto/api";
 import type React from "react";
-import type { UnitArgs, UnitConfig } from "../../units/type";
-import type { UNIT_KEYS } from "./const";
+import type { MultiUnitList, SingleUnitList, UnitList } from "../../units/config";
+import type { UnitArgs, UnitConfig, UnitDefaultArgs } from "../../units/type";
 
 export type * from "../../units/type";
 export interface Loader {
-	_units: Units | undefined;
-	_unitUris: UnitUris | undefined;
-	units: Units;
+	units: SingleUnits;
 	unitUris: UnitUris;
 	loadUnits: (log: (message: string) => void) => Promise<boolean>;
-	loadUnitUris: () => void;
-	updateUnit: (key: keyof Units, newUri: AtUri, log: (message: string) => void) => Promise<boolean>;
+	updateUnit: (unitUris: UnitUris, log: (message: string) => void) => Promise<boolean>;
 }
 
-export type UnitUris = {
-	[key in (typeof UNIT_KEYS)[number]]: AtUri;
+export type UnitUris = SingleUnitUris & MultiUnitUris;
+export type SingleUnitUris = {
+	[key in keyof SingleUnitList]: AtUri;
 };
+export type MultiUnitUris = {
+	[key in keyof MultiUnitList]: AtUri[];
+};
+
 export type SavedUnitUris = {
-	[key in (typeof UNIT_KEYS)[number]]?: string;
+	[key in keyof UnitList]?: string;
 };
 export type Unit<T> = React.FC<T>;
 
-export type Units = {
-	[K in keyof UnitArgs]: Unit<UnitArgs[K]>;
+export type Units = SingleUnits & MultiUnits;
+export type SingleUnits = {
+	[K in keyof SingleUnitList]: Unit<UnitArgs[K]>;
 };
-
+export type MultiUnits = {
+	[K in keyof MultiUnitList]: Unit<UnitArgs[K]>[];
+};
 export class UnitLoadFailedError extends Error {
 	constructor(
-		public key: keyof Units,
+		public key: keyof UnitList,
 		public context: "loadRecord" | "loadSrc" | "test",
 		public message: string,
 	) {
@@ -36,7 +41,8 @@ export class UnitLoadFailedError extends Error {
 	}
 }
 
-export type UnitModule<K extends (typeof UNIT_KEYS)[number]> = {
-	default: Unit<UnitArgs[K]>;
+export type UnitModule<T extends object> = {
+	default: Unit<T & UnitDefaultArgs>;
 	config?: UnitConfig;
 };
+export type logger = (message: string) => void;

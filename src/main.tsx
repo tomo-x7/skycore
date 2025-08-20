@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { App } from "./App.tsx";
 import "./index.css";
 import { createFetcher } from "./fetcher/index.ts";
-import { loader } from "./loader/index.ts";
+import { createLoader } from "./loader/index.ts";
 import { About } from "./otherpages/about.tsx";
 import { Login } from "./otherpages/login.tsx";
 import { UnitConfig } from "./pages/unitConfig.tsx";
@@ -27,7 +27,7 @@ async function init() {
 		return;
 	}
 	if (location.pathname.startsWith("/unitConfig")) {
-		loader.loadUnitUris();
+		const loader = createLoader();
 		root.render(
 			<StrictMode>
 				<Suspense fallback={<>loading...</>}>
@@ -38,6 +38,7 @@ async function init() {
 		return;
 	}
 	// splash作ったらそこに移行
+	const loader = createLoader();
 	await loader.loadUnits((message) => console.log(message));
 	const fetcher = await createFetcher();
 	if (fetcher == null) {
