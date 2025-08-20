@@ -52,8 +52,8 @@ export function createLoader(): Loader {
 					promises.push(p);
 				}
 			}
-			loadCSSs(cssUrls);
 			await Promise.all(promises);
+			loadCSSs(cssUrls);
 			units = { ...singleUnit, ...multiUnit };
 			return true;
 		} catch (e) {

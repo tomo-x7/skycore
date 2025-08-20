@@ -12,5 +12,3 @@ export type UnitArgs = { [K in keyof UnitList]: UnitList[K] & UnitDefaultArgs };
 export type UnitConfig = {
 	css?: (string | URL)[] | ((url: URL) => (string | URL)[]);
 };
-
-type inferArgs<T extends object | object[]> = T extends Array<infer U> ? U : T;
