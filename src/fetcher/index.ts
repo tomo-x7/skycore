@@ -56,16 +56,20 @@ export async function createFetcher() {
 				const pref = await agent.getPreferences();
 				if (pref.savedFeeds.length === 0) return [];
 				const { data: feedData } = await agent.app.bsky.feed.getFeedGenerators({
-					feeds: pref.savedFeeds.filter((feed) => feed.type !== "timeline").map((feed) => feed.value),
+					feeds: pref.savedFeeds
+						.filter((feed) => feed.type === "feed" || feed.type === "list")
+						.map((feed) => feed.value),
 				});
 
-				return pref.savedFeeds.map((feed) => ({
-					...feed,
-					data:
-						feed.type === "timeline"
-							? { displayName: "following" }
-							: feedData.feeds.find((f) => f.uri === feed.value),
-				}));
+				return pref.savedFeeds
+					.filter((feed) => feed.type === "feed" || feed.type === "list" || feed.type === "timeline")
+					.map((feed) => ({
+						...feed,
+						data:
+							feed.type === "timeline"
+								? { displayName: "following" }
+								: feedData.feeds.find((f) => f.uri === feed.value),
+					}));
 			},
 			60 * 60 * 24,
 		),
