@@ -14,8 +14,8 @@
 		width: 100%;
 	}
 
-	& > .content {
-		padding-left: 10px;
+	&  .content {
+		padding: 1px 10px 2px;
 		& .title {
 			font-weight: bold;
 			font-size: 1.15em;
@@ -23,8 +23,10 @@
 		& .description {
 		}
 		& hr {
+			border-color: #ddd;
 		}
 		& .hostname {
+			color: #888;
 		}
 	}
 }
