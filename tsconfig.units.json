@@ -9,7 +9,7 @@
 
 		/* Bundler mode */
 		"moduleResolution": "bundler",
-		"noEmit": false,
+		"noEmit": true,
 		"noFallthroughCasesInSwitch": true,
 		"noUncheckedSideEffectImports": true,
 		"skipLibCheck": true,

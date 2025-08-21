@@ -4,6 +4,7 @@ import { FaRotate } from "react-icons/fa6";
 import "./TLPost.css";
 import { useLoader } from "../../lib/contexts/loader";
 import { generateDefaultUnitArgs } from "../../loader/util";
+import { EmbedWrapper } from "../Embed";
 
 export function TLPostThread({ data, feed }: { data: AppBskyFeedDefs.FeedViewPost; feed: string }) {
 	const { reason, reply } = data;
@@ -21,7 +22,7 @@ export function TLPostThread({ data, feed }: { data: AppBskyFeedDefs.FeedViewPos
 			)}
 			{data.feedContext}
 			{isReply && <ReplyTree data={reply} />}
-			<TLPost isReply={isReply} post={data.post} {...generateDefaultUnitArgs()} />
+			<TLPost isReply={isReply} post={data.post} {...generateDefaultUnitArgs()} Embed={EmbedWrapper} />
 		</div>
 	);
 }
@@ -50,13 +51,13 @@ function ReplyTree({ data }: { data: AppBskyFeedDefs.ReplyRef }) {
 	const root = data.root as AppBskyFeedDefs.PostView;
 	const parent = data.parent as AppBskyFeedDefs.PostView;
 	if (root.uri === parent.uri) {
-		return <TLPost hasReply post={parent} {...generateDefaultUnitArgs()} />;
+		return <TLPost hasReply post={parent} {...generateDefaultUnitArgs()} Embed={EmbedWrapper} />;
 	}
 	const isLong = (parent.record as AppBskyFeedPost.Record).reply?.parent.uri !== root.uri;
 	return (
 		<>
-			<TLPost hasReply longReply={isLong} post={root} {...generateDefaultUnitArgs()} />
-			<TLPost hasReply isReply post={parent} {...generateDefaultUnitArgs()} />
+			<TLPost hasReply longReply={isLong} post={root} {...generateDefaultUnitArgs()} Embed={EmbedWrapper} />
+			<TLPost hasReply isReply post={parent} {...generateDefaultUnitArgs()} Embed={EmbedWrapper} />
 		</>
 	);
 }
