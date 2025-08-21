@@ -1,0 +1,30 @@
+.win-tomo-x-skycore-units-external-embed {
+	& > a {
+		display: block;
+		border: 1px solid gray;
+		border-radius: 15px;
+		overflow: clip;
+		margin: 8px 30px 15px 0;
+		color: black;
+		text-decoration: none;
+	}
+	& img {
+		object-fit: cover;
+		aspect-ratio: 1.91 / 1;
+		width: 100%;
+	}
+
+	& > .content {
+		padding-left: 10px;
+		& .title {
+			font-weight: bold;
+			font-size: 1.15em;
+		}
+		& .description {
+		}
+		& hr {
+		}
+		& .hostname {
+		}
+	}
+}
