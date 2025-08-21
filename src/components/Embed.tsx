@@ -1,8 +1,8 @@
-import { AppBskyFeedDefs } from "@atproto/api";
-import { useLoader } from "../lib/contexts/loader";
-import { generateDefaultUnitArgs } from "../loader/util";
-import { Units } from "../loader/types";
+import type { AppBskyFeedDefs } from "@atproto/api";
 import { useMemo } from "react";
+import { useLoader } from "../lib/contexts/loader";
+import type { Units } from "../loader/types";
+import { generateDefaultUnitArgs } from "../loader/util";
 
 export function EmbedWrapper({ post }: { post: AppBskyFeedDefs.PostView }) {
 	const loader = useLoader();
