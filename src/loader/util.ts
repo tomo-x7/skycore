@@ -48,6 +48,19 @@ export async function loadUnit<K extends keyof Units, T extends object>(
 	registerUnit(unitModule.default);
 	registerCss(loadUnitCSS(new URL(record.src), unitModule.config?.css));
 }
+export async function loadMultiUnit<K extends keyof Units, T extends object>(
+	key: K,
+	uris: AtUri[],
+	registerUnit: (unit: Unit<T & UnitDefaultArgs>) => void,
+	registerCss: (url: string[]) => void,
+	skipTest: boolean,
+	testArgs: T,
+	log: logger,
+) {
+	for (const uri of uris) {
+		await loadUnit(key, uri, registerUnit, registerCss, skipTest, testArgs, log);
+	}
+}
 
 export async function loadUnitRecord(key: keyof Units, uri: AtUri): Promise<UnitRecord.Record> {
 	try {

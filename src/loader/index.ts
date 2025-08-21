@@ -9,7 +9,7 @@ import {
 	type Units,
 	type UnitUris,
 } from "./types";
-import { loadCSSs, loadUnit, loadUnitConfig } from "./util";
+import { loadCSSs, loadMultiUnit, loadUnit, loadUnitConfig } from "./util";
 
 export function createLoader(): Loader {
 	let units: Units | null = null;
@@ -36,21 +36,19 @@ export function createLoader(): Loader {
 				promises.push(p);
 			}
 			for (const key of MULTI_UNIT_KEYS) {
-				for (const uri of loadUnitUris[key]) {
-					const p = loadUnit(
-						key,
-						uri,
-						(unit) => {
-							if (multiUnit[key] == null) multiUnit[key] = [];
-							multiUnit[key].push(unit);
-						},
-						registerCss,
-						skipTest,
-						UNIT_TEST_ARGS[key],
-						log,
-					);
-					promises.push(p);
-				}
+				multiUnit[key] = [];
+				const p = loadMultiUnit(
+					key,
+					loadUnitUris[key],
+					(unit) => {
+						multiUnit[key].push(unit);
+					},
+					registerCss,
+					skipTest,
+					UNIT_TEST_ARGS[key],
+					log,
+				);
+				promises.push(p);
 			}
 			await Promise.all(promises);
 			loadCSSs(cssUrls);

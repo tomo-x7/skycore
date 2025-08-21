@@ -21,12 +21,12 @@ function OneUnitConfig({ loader, unitKey }: { loader: Loader; unitKey: keyof Uni
 		setLogText("update unit uri...");
 		setUpdateStatus(undefined);
 		setOpen(true);
-		unitKey
-		loader
-			// .updateUnit(unitKey, loader.unitUris[unitKey], (message) => setLogText((prev) => `${prev}\n${message}`))
-			// .then((ok) => {
-			// 	setUpdateStatus(ok);
-			// });
+		unitKey;
+		loader;
+		// .updateUnit(unitKey, loader.unitUris[unitKey], (message) => setLogText((prev) => `${prev}\n${message}`))
+		// .then((ok) => {
+		// 	setUpdateStatus(ok);
+		// });
 	}, [loader, unitKey]);
 	return (
 		<div>
