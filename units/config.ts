@@ -12,9 +12,15 @@ export const UNIT_KEYS = [...SINGLE_UNIT_KEYS, ...MULTI_UNIT_KEYS] satisfies Rea
 
 export type UnitList = SingleUnitList & MultiUnitList;
 export type SingleUnitList = {
-	TLPost: { post: AppBskyFeedDefs.PostView; isReply?: boolean; hasReply?: boolean; longReply?: boolean };
+	TLPost: {
+		post: AppBskyFeedDefs.PostView;
+		isReply?: boolean;
+		hasReply?: boolean;
+		longReply?: boolean;
+		Embed: React.FC<{ post: AppBskyFeedDefs.PostView }>;
+	};
 };
 
 export type MultiUnitList = {
-	embed: { uri: string };
+	embed: { post: AppBskyFeedDefs.PostView };
 };

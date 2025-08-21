@@ -1,6 +1,6 @@
 import type { AppBskyFeedPost } from "@atproto/api";
 import type { UnitArgs, UnitConfig } from "./type";
-export default function TLPost({ post, isReply, hasReply, longReply, React }: UnitArgs["TLPost"]) {
+export default function TLPost({ post, isReply, hasReply, longReply, React, Embed }: UnitArgs["TLPost"]) {
 	return (
 		<div className="win-tomo-x-skycore-units-tlpost">
 			<div className="left">
@@ -20,6 +20,7 @@ export default function TLPost({ post, isReply, hasReply, longReply, React }: Un
 					<div className="handle">@{post.author.handle ?? post.author.did}</div>
 				</div>
 				<div className="text">{(post.record as AppBskyFeedPost.Record).text}</div>
+				<Embed post={post} />
 
 				{longReply && <div className="openthread">スレッドをすべて表示</div>}
 			</div>

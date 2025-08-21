@@ -5,7 +5,7 @@ import type { UnitArgs, UnitConfig, UnitDefaultArgs } from "../../units/type";
 
 export type * from "../../units/type";
 export interface Loader {
-	units: SingleUnits;
+	units: Units;
 	unitUris: UnitUris;
 	loadUnits: (log: (message: string) => void) => Promise<boolean>;
 	updateUnit: (unitUris: UnitUris, log: (message: string) => void) => Promise<boolean>;
