@@ -9,6 +9,7 @@ export async function testUnit<K extends keyof UnitList, T extends object>(
 	Unit: Unit<T & UnitDefaultArgs>,
 	args: T,
 	skip: boolean,
+	testSec = 10,
 ) {
 	if (skip)
 		return new Promise<void>((resolve, reject) => {
@@ -17,7 +18,7 @@ export async function testUnit<K extends keyof UnitList, T extends object>(
 		});
 
 	return new Promise<void>((resolve, rejectInner) => {
-		const timer = setTimeout(() => resolve(), 10 * 1000);
+		const timer = setTimeout(() => resolve(), testSec * 1000);
 		const reject = (e: unknown) => {
 			clearTimeout(timer);
 			rejectInner(new UnitLoadFailedError(key, "test", String(e)));

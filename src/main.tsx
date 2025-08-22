@@ -39,12 +39,16 @@ async function init() {
 	}
 	// splash作ったらそこに移行
 	const loader = createLoader();
-	await loader.loadUnits((message) => console.log(message));
+	console.time("fetcher");
 	const fetcher = await createFetcher();
+	console.timeEnd("fetcher");
 	if (fetcher == null) {
 		location.href = "/login";
 		return;
 	}
+	console.time("loader");
+	await loader.loadUnits((message) => console.log(message));
+	console.timeEnd("loader");
 	globalThis.fetcher = fetcher;
 	globalThis.goTop = () => void 0;
 	root.render(

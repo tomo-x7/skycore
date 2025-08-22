@@ -7,7 +7,6 @@ import { generateDefaultUnitArgs } from "../loader/util";
 export function EmbedWrapper({ post }: { post: AppBskyFeedDefs.PostView }) {
 	const loader = useLoader();
 	const embed = useMemo(() => getEmbed(post, loader.units.embed), [post, loader.units.embed]);
-	console.log(isExternalEmbed(post.embed));
 	return <>{embed}</>;
 }
 

@@ -110,7 +110,6 @@ function MoreLoader({ cursor, observer }: { observer: IntersectionObserver | nul
 	useEffect(() => {
 		if (ref.current == null) return;
 		observer?.observe(ref.current);
-		console.log("observe");
 		return () => {
 			if (ref.current) observer?.unobserve(ref.current);
 		};

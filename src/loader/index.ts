@@ -14,12 +14,19 @@ import { loadCSSs, loadMultiUnit, loadUnit, loadUnitConfig } from "./util";
 export function createLoader(): Loader {
 	let units: Units | null = null;
 	const unitUris = loadUnitConfig();
-	const loadUnitsInner = async (log: logger, skipTest: boolean, loadUnitUris: UnitUris = unitUris) => {
+	const loadUnitsInner = async (
+		log: logger,
+		skipTest: boolean,
+		loadUnitUris: UnitUris = unitUris,
+		testSec: number,
+	) => {
 		const singleUnit = {} as SingleUnits;
 		const multiUnit = {} as MultiUnits;
 		const cssUrls: string[] = [];
 		const promises: Promise<unknown>[] = [];
+		const testPromises: Promise<unknown>[] = [];
 		const registerCss = (urls: string[]) => cssUrls.push(...urls);
+		const registerTest = (promise: Promise<unknown>) => testPromises.push(promise);
 		try {
 			for (const key of SINGLE_UNIT_KEYS) {
 				const p = loadUnit(
@@ -31,7 +38,9 @@ export function createLoader(): Loader {
 					registerCss,
 					skipTest,
 					UNIT_TEST_ARGS[key],
+					testSec,
 					log,
+					registerTest,
 				);
 				promises.push(p);
 			}
@@ -46,11 +55,14 @@ export function createLoader(): Loader {
 					registerCss,
 					skipTest,
 					UNIT_TEST_ARGS[key],
+					testSec,
 					log,
+					registerTest,
 				);
 				promises.push(p);
 			}
 			await Promise.all(promises);
+			await Promise.all(testPromises);
 			loadCSSs(cssUrls);
 			units = { ...singleUnit, ...multiUnit };
 			return true;
@@ -70,9 +82,9 @@ export function createLoader(): Loader {
 			return units;
 		},
 		unitUris,
-		loadUnits: (log: logger): Promise<boolean> => loadUnitsInner(log, false),
+		loadUnits: (log: logger): Promise<boolean> => loadUnitsInner(log, true, undefined, 2),
 		updateUnit: async (unitUris: UnitUris, log: logger): Promise<boolean> => {
-			const success = await loadUnitsInner(log, false, unitUris);
+			const success = await loadUnitsInner(log, false, unitUris, 5);
 			if (success === false) return false;
 			throw new Error("Function not implemented.");
 		},

@@ -31,7 +31,6 @@ function HomeInner() {
 	const { home, setHome } = useHomeFeed();
 	useEffect(() => {
 		if (pinnedFeeds.length > 0 && home == null) {
-			console.log(pinnedFeeds[0]);
 			setHome(pinnedFeeds[0].value);
 		}
 	}, [pinnedFeeds, home, setHome]);
@@ -46,7 +45,6 @@ function HomeInner() {
 		switcherRef.current?.addEventListener("wheel", onWheel, { passive: false });
 		return () => switcherRef.current?.removeEventListener("wheel", onWheel);
 	}, []);
-	console.log(home);
 	return (
 		<>
 			<div className="switcher" ref={switcherRef}>

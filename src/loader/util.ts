@@ -20,7 +20,7 @@ import {
 	type UnitUris,
 } from "./types";
 
-const didResolver = new DidResolver({ didCache: new MemoryCache() });
+const didResolver = new DidResolver({ didCache: new MemoryCache(), timeout: 10 * 1000 });
 async function resolveDidToPds(did: string) {
 	const res = await didResolver.resolve(did);
 	if (res == null) throw new Error(`Failed to resolve DID: ${did}`);
@@ -38,13 +38,16 @@ export async function loadUnit<K extends keyof Units, T extends object>(
 	registerCss: (url: string[]) => void,
 	skipTest: boolean,
 	testArgs: T,
+	testSec: number,
 	log: logger,
+	registerTest: (promise: Promise<unknown>) => void,
 ) {
 	const record = await loadUnitRecord(key, uri);
 	const validateResult = validateUnitRecord(key, record);
 	if (validateResult.result === "warn") log(`[warn][${key}] ${validateResult.message}`);
 	const unitModule: UnitModule<T> = await import(/* @vite-ignore */ record.src);
-	await testUnit<K, T>(key, unitModule.default, testArgs, skipTest);
+	const testPromise = testUnit<K, T>(key, unitModule.default, testArgs, skipTest, testSec);
+	registerTest(testPromise);
 	registerUnit(unitModule.default);
 	registerCss(loadUnitCSS(new URL(record.src), unitModule.config?.css));
 }
@@ -55,10 +58,12 @@ export async function loadMultiUnit<K extends keyof Units, T extends object>(
 	registerCss: (url: string[]) => void,
 	skipTest: boolean,
 	testArgs: T,
+	testSec: number,
 	log: logger,
+	registerTest: (promise: Promise<unknown>) => void,
 ) {
 	for (const uri of uris) {
-		await loadUnit(key, uri, registerUnit, registerCss, skipTest, testArgs, log);
+		await loadUnit(key, uri, registerUnit, registerCss, skipTest, testArgs, testSec, log, registerTest);
 	}
 }
 

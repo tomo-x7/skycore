@@ -17,7 +17,6 @@ export default function YoutubeEmbed({ React, fetcher, post }: UnitArgs["embed"]
 }
 
 function YoutubeEmbedInner({ v, React }: { v: string | null } & { React: UnitDefaultArgs["React"] }) {
-	console.log(`render youtube ${v}`);
 	if (v == null) return null;
 	return (
 		<iframe
