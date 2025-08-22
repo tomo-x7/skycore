@@ -14,19 +14,33 @@
 		width: 100%;
 	}
 
-	&  .content {
+	& .content {
 		padding: 1px 10px 2px;
 		& .title {
 			font-weight: bold;
 			font-size: 1.15em;
+			line-clamp: 2;
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 2;
+			text-overflow: ellipsis;
+			overflow: hidden;
 		}
 		& .description {
+			line-clamp: 2;
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 2;
+			text-overflow: ellipsis;
+			overflow: hidden;
 		}
 		& hr {
 			border-color: #ddd;
 		}
 		& .hostname {
 			color: #888;
+			display: flex;
+			align-items: center;
 		}
 	}
 }
