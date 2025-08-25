@@ -19,13 +19,11 @@ function SkyblurEmbed({ React, post, fetcher, record }: UnitArgs["embed"] & { re
 	if (!isExternalEmbed(post.embed)) return null;
 	return (
 		<div className="win-tomo-x-skycore-unit-skyblurembed">
-			{skyblurDataRef.current ? (
-				<React.Suspense fallback={<div className="loading">loading</div>}>
-					<SkyblurEmbedInner dataPromise={skyblurDataRef.current} React={React} />
-				</React.Suspense>
-			) : (
-				<div className="loading">loading</div>
-			)}
+			(
+			<React.Suspense fallback={<div className="loading">loading</div>}>
+				<SkyblurEmbedInner dataPromise={skyblurDataRef.current} React={React} />
+			</React.Suspense>
+			)
 		</div>
 	);
 }
@@ -33,10 +31,10 @@ function SkyblurEmbedInner({
 	dataPromise,
 	React,
 }: {
-	dataPromise: Promise<SkyblurData | null>;
+	dataPromise: Promise<SkyblurData | null> | null;
 	React: UnitDefaultArgs["React"];
 }) {
-	const data = React.use(dataPromise);
+	const data = dataPromise && React.use(dataPromise);
 	const [open, setOpen] = React.useState(false);
 	const [adOpen, setAdOpen] = React.useState(false);
 	if (data == null) return <div>Failed to load Skyblur data</div>;
