@@ -1,0 +1,32 @@
+.win-tomo-x-skycore-unit-skyblurembed {
+	margin: 8px 30px 15px 0;
+	min-height: 50px;
+	border: 1px solid gray;
+	border-radius: 15px;
+	position: relative;
+	& > .loading {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	& > .main {
+		& > .open {
+			background: transparent;
+			border: none;
+		}
+		& > .content {
+			padding: 12px 16px;
+		}
+		& .openadditional {
+			padding: 12px 16px;
+		}
+		& .additional {
+			padding: 12px 16px;
+		}
+	}
+	& > .link {
+		position: absolute;
+		bottom: 0;
+		right: 0;
+	}
+}
