@@ -1,5 +1,7 @@
+import { getHandle, getPdsEndpoint, isValidDidDoc } from "@atproto/common-web";
+import type { DidResolver } from "@atproto/identity";
 import type { XRPCResponse } from "@atproto/xrpc";
-import type { CacheGetMethod, NoCacheGetMethod, Result, ResultPromise } from "./types";
+import type { CacheGetMethod, NoCacheGetMethod, ResolvedDid, Result, ResultPromise } from "./types";
 
 /**
  * @param func throwable
@@ -151,5 +153,20 @@ function createNoCacheGetterInner<Func extends (...args: any[]) => any>(
 			lastPromise = null;
 		}, 300);
 		return promise;
+	};
+}
+
+export function createResolveDid(didResolver: DidResolver): (did: string) => Promise<ResolvedDid> {
+	return async (did: string) => {
+		const doc = await didResolver.resolve(did);
+		if (!isValidDidDoc(doc)) throw new Error("Invalid DID document");
+		const handle = getHandle(doc);
+		if (handle == null) throw new Error("Invalid DID document:handle");
+		const pdsEndpoint = getPdsEndpoint(doc);
+		if (pdsEndpoint == null) throw new Error("Invalid DID document:pdsEndpoint");
+		return {
+			handle,
+			pdsEndpoint,
+		};
 	};
 }

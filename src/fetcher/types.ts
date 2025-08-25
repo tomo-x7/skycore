@@ -11,3 +11,8 @@ export type ResultPromise<F extends Function> = Promise<Result<Awaited<ReturnTyp
 export type NoCacheGetMethod<F extends Function> = (...params: Parameters<F>) => ResultPromise<F>;
 export type CacheGetMethod<F extends Function> = (useCache: boolean, ...params: Parameters<F>) => ResultPromise<F>;
 export type PostMethod<F extends Function> = (...params: Parameters<F>) => ResultPromise<F>;
+
+export type ResolvedDid = {
+	handle: string;
+	pdsEndpoint: string;
+};

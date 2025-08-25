@@ -1,8 +1,9 @@
 import { AtUri, type ComAtprotoRepoGetRecord } from "@atproto/api";
 import { getHandle, getPdsEndpoint } from "@atproto/common-web";
-import { DidResolver, MemoryCache } from "@atproto/identity";
+import { DidResolver } from "@atproto/identity";
 import React from "react";
 import { isMultiUnit, type MultiUnitList, UNIT_KEYS, type UnitList } from "../../units/config";
+import { getDidCache } from "../caches";
 import { WinTomoXAtunitsUnit as UnitRecord } from "../lexicons";
 import { DEFAULT_UNIT_URIS, REACT_VER, UNIT_URIS_KEY, UNIT_VERS } from "./const";
 import { testUnit } from "./testUnit";
@@ -20,7 +21,7 @@ import {
 	type UnitUris,
 } from "./types";
 
-const didResolver = new DidResolver({ didCache: new MemoryCache(), timeout: 10 * 1000 });
+const didResolver = new DidResolver({ didCache: getDidCache(), timeout: 10 * 1000 });
 async function resolveDidToPds(did: string) {
 	const res = await didResolver.resolve(did);
 	if (res == null) throw new Error(`Failed to resolve DID: ${did}`);
