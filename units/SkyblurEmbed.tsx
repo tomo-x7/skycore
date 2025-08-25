@@ -23,7 +23,8 @@ function SkyblurEmbed({ React, post, fetcher, record }: UnitArgs["embed"] & { re
 		fetchSkyblurData(record, fetcher, post.author.did).then(setData);
 	}, [record, fetcher, post]);
 	const [open, setOpen] = React.useState(false);
-	const [adOpen, setAdOpen] = React.useState(false);
+	const adLength = data?.additional?.length ?? 0;
+	const [adOpen, setAdOpen] = React.useState(adLength > 100);
 	if (!isExternalEmbed(post.embed)) return null;
 	if (data == null) return <div className="loading">loading</div>;
 	return (
@@ -32,14 +33,18 @@ function SkyblurEmbed({ React, post, fetcher, record }: UnitArgs["embed"] & { re
 				{open ? (
 					<div className="content">
 						{data.text.replace(/\[|\]/g, "")}
-						{data.additional &&
-							(adOpen ? (
-								<div className="additional">{data.additional}</div>
-							) : (
-								<button className="openadditional" type="button" onClick={() => setAdOpen(true)}>
-									補足を表示
-								</button>
-							))}
+						{data.additional && (
+							<>
+								<hr />
+								{adOpen ? (
+									<div className="additional">{data.additional}</div>
+								) : (
+									<button className="openadditional" type="button" onClick={() => setAdOpen(true)}>
+										補足を表示
+									</button>
+								)}
+							</>
+						)}
 					</div>
 				) : (
 					<button className="open" type="button" onClick={() => setOpen((prev) => !prev)}>
