@@ -7,37 +7,20 @@ export default function SkyblurEmbedOuter(args: UnitArgs["embed"]) {
 	if (!isExternalEmbed(args.post.embed)) return null;
 	if (!isSkyblurPost(args.post.record)) return null;
 	if (args.post.record["uk.skyblur.post.visibility"] !== "public") return null;
-	return <SkyblurEmbed {...args} record={args.post.record} />;
-}
-function SkyblurEmbed({ React, post, fetcher, record }: UnitArgs["embed"] & { record: SkyblurRecord }) {
-	const skyblurDataRef = React.useRef<Promise<SkyblurData | null>>(null);
-	React.useEffect(() => {
-		if (skyblurDataRef.current == null) {
-			skyblurDataRef.current = fetchSkyblurData(record, fetcher, post.author.did);
-		}
-	}, [skyblurDataRef, record, fetcher, post]);
-	if (!isExternalEmbed(post.embed)) return null;
 	return (
 		<div className="win-tomo-x-skycore-unit-skyblurembed">
-			(
-			<React.Suspense fallback={<div className="loading">loading</div>}>
-				<SkyblurEmbedInner dataPromise={skyblurDataRef.current} React={React} />
-			</React.Suspense>
-			)
+			<SkyblurEmbed {...args} record={args.post.record} />
 		</div>
 	);
 }
-function SkyblurEmbedInner({
-	dataPromise,
-	React,
-}: {
-	dataPromise: Promise<SkyblurData | null> | null;
-	React: UnitDefaultArgs["React"];
-}) {
-	const data = dataPromise && React.use(dataPromise);
+function SkyblurEmbed({ React, post, fetcher, record }: UnitArgs["embed"] & { record: SkyblurRecord }) {
+	const [data, setData] = React.useState<SkyblurData | null>(null);
+	React.useEffect(() => {
+		fetchSkyblurData(record, fetcher, post.author.did).then(setData);
+	}, [record, fetcher, post]);
 	const [open, setOpen] = React.useState(false);
 	const [adOpen, setAdOpen] = React.useState(false);
-	if (data == null) return <div>Failed to load Skyblur data</div>;
+	if (data == null) return <div className="loading">loading</div>;
 	return (
 		<div>
 			<button type="button" onClick={() => setOpen((prev) => !prev)}>
