@@ -1,4 +1,4 @@
-import type { $Typed, AppBskyEmbedExternal, AppBskyFeedDefs } from "@atproto/api";
+import type { $Typed, AppBskyEmbedExternal, AppBskyFeedDefs,ComAtprotoRepoGetRecord } from "@atproto/api";
 
 export function isExternalEmbed(embed: AppBskyFeedDefs.PostView["embed"]): embed is $Typed<AppBskyEmbedExternal.View> {
 	return embed?.$type === "app.bsky.embed.external#view";
@@ -13,5 +13,5 @@ export async function getRecord<T>(pdsUrl: string, uri: string) {
 	sp.set("rkey", rkey);
 	const res = await fetch(`${pdsUrl}/xrpc/com.atproto.repo.getRecord?${sp.toString()}`);
 	if (!res.ok) return null;
-	return (await res.json()) as T;
+	return (await res.json()).value as T;
 }
