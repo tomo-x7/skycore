@@ -2,18 +2,18 @@ import type { AppBskyFeedPost } from "@atproto/api";
 import type { UnitArgs, UnitDefaultArgs } from "./type";
 import { getRecord, isExternalEmbed } from "./util";
 
-export default function SkyBlurEmbedOuter(args: UnitArgs["embed"]) {
+export default function SkyblurEmbedOuter(args: UnitArgs["embed"]) {
 	const React = args.React;
 	if (!isExternalEmbed(args.post.embed)) return null;
-	if (!isSkyBlurPost(args.post.record)) return null;
+	if (!isSkyblurPost(args.post.record)) return null;
 	if (args.post.record["uk.skyblur.post.visibility"] !== "public") return null;
-	return <SkyBlurEmbed {...args} record={args.post.record} />;
+	return <SkyblurEmbed {...args} record={args.post.record} />;
 }
-function SkyBlurEmbed({ React, post, fetcher, record }: UnitArgs["embed"] & { record: SkyBlurRecord }) {
-	const skyblurDataRef = React.useRef<Promise<SkyBlurData | null>>(null);
+function SkyblurEmbed({ React, post, fetcher, record }: UnitArgs["embed"] & { record: SkyblurRecord }) {
+	const skyblurDataRef = React.useRef<Promise<SkyblurData | null>>(null);
 	React.useEffect(() => {
 		if (skyblurDataRef.current == null) {
-			skyblurDataRef.current = fetchSkyBlurData(record, fetcher, post.author.did);
+			skyblurDataRef.current = fetchSkyblurData(record, fetcher, post.author.did);
 		}
 	}, [skyblurDataRef, record, fetcher, post]);
 	if (!isExternalEmbed(post.embed)) return null;
@@ -21,7 +21,7 @@ function SkyBlurEmbed({ React, post, fetcher, record }: UnitArgs["embed"] & { re
 		<div className="win-tomo-x-skycore-unit-skyblurembed">
 			{skyblurDataRef.current ? (
 				<React.Suspense fallback={<div className="loading">loading</div>}>
-					<SkyBlurEmbedInner dataPromise={skyblurDataRef.current} React={React} />
+					<SkyblurEmbedInner dataPromise={skyblurDataRef.current} React={React} />
 				</React.Suspense>
 			) : (
 				<div className="loading">loading</div>
@@ -29,17 +29,17 @@ function SkyBlurEmbed({ React, post, fetcher, record }: UnitArgs["embed"] & { re
 		</div>
 	);
 }
-function SkyBlurEmbedInner({
+function SkyblurEmbedInner({
 	dataPromise,
 	React,
 }: {
-	dataPromise: Promise<SkyBlurData | null>;
+	dataPromise: Promise<SkyblurData | null>;
 	React: UnitDefaultArgs["React"];
 }) {
 	const data = React.use(dataPromise);
 	const [open, setOpen] = React.useState(false);
 	const [adOpen, setAdOpen] = React.useState(false);
-	if (data == null) return <div>Failed to load SkyBlur data</div>;
+	if (data == null) return <div>Failed to load Skyblur data</div>;
 	return (
 		<div>
 			<button type="button" onClick={() => setOpen((prev) => !prev)}>
@@ -58,17 +58,17 @@ function SkyBlurEmbedInner({
 	);
 }
 
-async function fetchSkyBlurData(
-	record: SkyBlurRecord,
+async function fetchSkyblurData(
+	record: SkyblurRecord,
 	fetcher: UnitDefaultArgs["fetcher"],
 	authorDid: string,
-): Promise<SkyBlurData | null> {
+): Promise<SkyblurData | null> {
 	const { pdsEndpoint } = await fetcher.resolveDid(authorDid);
-	const data = await getRecord<SkyBlurData>(pdsEndpoint, record["uk.skyblur.post.uri"]);
+	const data = await getRecord<SkyblurData>(pdsEndpoint, record["uk.skyblur.post.uri"]);
 	return data;
 }
 
-function isSkyBlurPost(postRecord: { [key: string]: unknown }): postRecord is SkyBlurRecord {
+function isSkyblurPost(postRecord: { [key: string]: unknown }): postRecord is SkyblurRecord {
 	if (
 		typeof postRecord["uk.skyblur.post.uri"] === "string" &&
 		postRecord["uk.skyblur.post.uri"].startsWith("at://") &&
@@ -80,11 +80,11 @@ function isSkyBlurPost(postRecord: { [key: string]: unknown }): postRecord is Sk
 	return false;
 }
 
-type SkyBlurData = {
+type SkyblurData = {
 	text: string;
 	additional?: string;
 };
-type SkyBlurRecord = {
+type SkyblurRecord = {
 	"uk.skyblur.post.uri": string;
 	"uk.skyblur.post.visibility": "public" | "password";
 } & AppBskyFeedPost.Record;
