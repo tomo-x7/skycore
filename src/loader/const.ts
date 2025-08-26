@@ -6,6 +6,7 @@ export const DEFAULT_UNIT_URIS: UnitUris = {
 	TLPost: new AtUri("at://did:plc:qcwvyds5tixmcwkwrg3hxgxd/win.tomo-x.atunits.unit/TLPost"),
 	embed: [
 		new AtUri("at://did:plc:qcwvyds5tixmcwkwrg3hxgxd/win.tomo-x.atunits.unit/YoutubeEmbed"),
+		new AtUri("at://did:plc:qcwvyds5tixmcwkwrg3hxgxd/win.tomo-x.atunits.unit/SkyblurEmbed"),
 		new AtUri("at://did:plc:qcwvyds5tixmcwkwrg3hxgxd/win.tomo-x.atunits.unit/ExternalEmbed"),
 	],
 } as const;

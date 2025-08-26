@@ -7,6 +7,8 @@ import { createLoader } from "./loader/index.ts";
 import { About } from "./otherpages/about.tsx";
 import { Login } from "./otherpages/login.tsx";
 import { UnitConfig } from "./pages/unitConfig.tsx";
+import { SplashScreen } from "./pages/splash.tsx";
+import { logSubscriptions, performanceLog } from "./util.ts";
 
 async function init() {
 	const root = createRoot(document.getElementById("root")!);
@@ -37,18 +39,22 @@ async function init() {
 		);
 		return;
 	}
-	// splash作ったらそこに移行
-	const loader = createLoader();
-	console.time("fetcher");
+	const { log, setListener } = logSubscriptions();
+	root.render(<SplashScreen setListener={setListener} />);
+
+	log("fetcher loading");
+	const fetcherEnd=performanceLog()
 	const fetcher = await createFetcher();
-	console.timeEnd("fetcher");
+	log(`fetcher loaded in ${fetcherEnd().toFixed(2)} ms`);
 	if (fetcher == null) {
 		location.href = "/login";
 		return;
 	}
-	console.time("loader");
-	await loader.loadUnits((message) => console.log(message));
-	console.timeEnd("loader");
+	log("loader loading");
+	const loaderEnd=performanceLog()
+	const loader = createLoader();
+	await loader.loadUnits(log);
+	log(`loader loaded in ${loaderEnd().toFixed(2)} ms`);
 	globalThis.fetcher = fetcher;
 	globalThis.goTop = () => void 0;
 	root.render(
