@@ -6,8 +6,8 @@ import { createFetcher } from "./fetcher/index.ts";
 import { createLoader } from "./loader/index.ts";
 import { About } from "./otherpages/about.tsx";
 import { Login } from "./otherpages/login.tsx";
-import { UnitConfig } from "./pages/unitConfig.tsx";
 import { SplashScreen } from "./pages/splash.tsx";
+import { UnitConfig } from "./pages/unitConfig.tsx";
 import { logSubscriptions, performanceLog } from "./util.ts";
 
 async function init() {
@@ -43,7 +43,7 @@ async function init() {
 	root.render(<SplashScreen setListener={setListener} />);
 
 	log("fetcher loading");
-	const fetcherEnd=performanceLog()
+	const fetcherEnd = performanceLog();
 	const fetcher = await createFetcher();
 	log(`fetcher loaded in ${fetcherEnd().toFixed(2)} ms`);
 	if (fetcher == null) {
@@ -51,7 +51,7 @@ async function init() {
 		return;
 	}
 	log("loader loading");
-	const loaderEnd=performanceLog()
+	const loaderEnd = performanceLog();
 	const loader = createLoader();
 	await loader.loadUnits(log);
 	log(`loader loaded in ${loaderEnd().toFixed(2)} ms`);

@@ -1,7 +1,7 @@
 import type { AppBskyFeedPost } from "@atproto/api";
+import { MdOpenInNew } from "react-icons/md";
 import type { UnitArgs, UnitConfig, UnitDefaultArgs } from "./type";
 import { getRecord, isExternalEmbed } from "./util";
-import { MdOpenInNew } from "react-icons/md";
 
 export const config: UnitConfig = {
 	css: ["SkyblurEmbed.css"],

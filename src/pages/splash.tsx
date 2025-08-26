@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function SplashScreen({ setListener }: { setListener: (listener: (messages: string[]) => void) => void }) {
 	const [messages, setMessages] = useState(["start loading"]);
