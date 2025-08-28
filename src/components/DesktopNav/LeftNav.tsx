@@ -17,7 +17,7 @@ import { useMatches } from "../../lib/hooks/match";
 function NavItem({ to, text, active, Icon }: { to: string; text: string; active: boolean; Icon: IconType }) {
 	return (
 		<li>
-			<Link className={active ? "active" : ""} onClick={close} to={to}>
+			<Link className={active ? "active" : ""} to={to}>
 				<Icon className="icon" size={25} />
 				{text}
 			</Link>
