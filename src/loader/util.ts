@@ -2,7 +2,14 @@ import { AtUri, type ComAtprotoRepoGetRecord } from "@atproto/api";
 import { getHandle, getPdsEndpoint } from "@atproto/common-web";
 import { DidResolver } from "@atproto/identity";
 import React from "react";
-import { isMultiUnit, type MultiUnitList, UNIT_KEYS, type UnitList } from "../../units/config";
+import {
+	isMultiUnit,
+	MULTI_UNIT_KEYS,
+	type MultiUnitList,
+	SINGLE_UNIT_KEYS,
+	UNIT_KEYS,
+	type UnitList,
+} from "../../units/config";
 import { getDidCache } from "../caches";
 import { WinTomoXAtunitsUnit as UnitRecord } from "../lexicons";
 import { DEFAULT_UNIT_URIS, REACT_VER, UNIT_URIS_KEY, UNIT_VERS } from "./const";
@@ -94,12 +101,11 @@ export function loadUnitConfig(): UnitUris {
 		const parsed = JSON.parse(saved) as SavedUnitUris;
 		const multiResult = {} as MultiUnitUris;
 		const singleResult = {} as SingleUnitUris;
-		for (const key of UNIT_KEYS) {
-			if (isKeyMultiUnit(key)) {
-				multiResult[key] = parseMultiUnitUris(parsed[key]) ?? DEFAULT_UNIT_URIS[key];
-			} else {
-				singleResult[key] = parsed[key] ? new AtUri(parsed[key]) : DEFAULT_UNIT_URIS[key];
-			}
+		for (const key of SINGLE_UNIT_KEYS) {
+			singleResult[key] = parsed[key] ? new AtUri(parsed[key]) : DEFAULT_UNIT_URIS[key];
+		}
+		for (const key of MULTI_UNIT_KEYS) {
+			multiResult[key] = parseMultiUnitUris(parsed[key]) ?? DEFAULT_UNIT_URIS[key];
 		}
 		return { ...multiResult, ...singleResult };
 	} catch (e) {
@@ -110,16 +116,32 @@ export function loadUnitConfig(): UnitUris {
 export function isKeyMultiUnit(key: keyof UnitList): key is keyof MultiUnitList {
 	return isMultiUnit[key] === true;
 }
-function parseMultiUnitUris(uris: string | undefined) {
+function parseMultiUnitUris(uris: string | string[] | undefined) {
+	console.log(uris);
 	if (uris == null) return null;
 	try {
+		if (Array.isArray(uris)) return uris.map((uri) => new AtUri(uri));
 		return uris.split(",").map((uri) => new AtUri(uri.trim()));
 	} catch (e) {
 		return null;
 	}
 }
 
-export function updateUnitConfig(key: keyof UnitUris, uri: AtUri) {}
+export function updateUnitConfig(unitUris: UnitUris) {
+	try {
+		localStorage.setItem(
+			UNIT_URIS_KEY,
+			JSON.stringify(unitUris, (k, v) => {
+				if (v instanceof AtUri) return v.toString();
+				return v;
+			}),
+		);
+		return true;
+	} catch (e) {
+		console.error("Failed to save unit config to localStorage", e);
+		return false;
+	}
+}
 
 export function validateUnitRecord(
 	key: keyof Units,

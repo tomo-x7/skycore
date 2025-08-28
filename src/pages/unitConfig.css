@@ -1,0 +1,68 @@
+#unitConfig {
+	width: 100dvw;
+	max-width: 500px;
+	padding: 5px;
+	margin-left: auto;
+	margin-right: auto;
+	.single-config {
+		display: flex;
+		.key {
+			margin-right: 5px;
+		}
+		.value {
+			flex-grow: 1;
+		}
+		&:has(.invalid) .value {
+			border-color: red;
+			border-style: solid;
+			outline-color: red;
+		}
+	}
+	.multi-config {
+		.values {
+			display: flex;
+			flex-direction: column;
+			padding-left: 30px;
+			gap: 5px;
+		}
+		.value {
+			width: 100%;
+			display: flex;
+			position: relative;
+			input {
+				flex-grow: 1;
+			}
+			.invalid + input {
+				border-color: red;
+				border-style: solid;
+				outline-color: red;
+			}
+			.invalid {
+				position: absolute;
+				left: -1.2em;
+			}
+			.remove-btn {
+				background: none;
+				border: none;
+				cursor: pointer;
+			}
+		}
+		.add{
+			margin-left: 30px;
+		}
+	}
+	#save {
+		display: block;
+		margin-left: auto;
+		margin-right: 20px;
+		margin-top: 10px;
+		padding: 10px 30px;
+		font-size: 20px;
+		background-color: blue;
+		color: white;
+		border:none;
+		&:disabled{
+			background-color: gray;
+		}
+	}
+}

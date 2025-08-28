@@ -8,7 +8,8 @@ export interface Loader {
 	units: Units;
 	unitUris: UnitUris;
 	loadUnits: (log: (message: string) => void) => Promise<boolean>;
-	updateUnit: (unitUris: UnitUris, log: (message: string) => void) => Promise<boolean>;
+	testUnit: (unitUris: UnitUris, log: (message: string) => void) => Promise<boolean>;
+	updateUnit: (unitUris: UnitUris) => boolean;
 }
 
 export type UnitUris = SingleUnitUris & MultiUnitUris;
@@ -19,9 +20,9 @@ export type MultiUnitUris = {
 	[key in keyof MultiUnitList]: AtUri[];
 };
 
-export type SavedUnitUris = {
-	[key in keyof UnitList]?: string;
-};
+export type SavedUnitUris = 
+	{ [key in keyof SingleUnitList]?: string } &
+	{ [key in keyof MultiUnitList]?: string[] };
 export type Unit<T> = React.FC<T>;
 
 export type Units = SingleUnits & MultiUnits;

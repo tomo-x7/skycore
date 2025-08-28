@@ -9,11 +9,11 @@ import {
 	type Units,
 	type UnitUris,
 } from "./types";
-import { loadCSSs, loadMultiUnit, loadUnit, loadUnitConfig } from "./util";
+import { loadCSSs, loadMultiUnit, loadUnit, loadUnitConfig, updateUnitConfig } from "./util";
 
 export function createLoader(): Loader {
 	let units: Units | null = null;
-	const unitUris = loadUnitConfig();
+	let unitUris = loadUnitConfig();
 	const loadUnitsInner = async (
 		log: logger,
 		skipTest: boolean,
@@ -81,12 +81,19 @@ export function createLoader(): Loader {
 			if (units == null) throw new Error("Units not loaded");
 			return units;
 		},
-		unitUris,
-		loadUnits: (log: logger): Promise<boolean> => loadUnitsInner(log, true, undefined, 2),
-		updateUnit: async (unitUris: UnitUris, log: logger): Promise<boolean> => {
+		get unitUris(){
+			return unitUris
+		},
+		loadUnits: (log: logger): Promise<boolean> => loadUnitsInner(log, true, undefined, 0),
+		testUnit: async (unitUris: UnitUris, log: logger): Promise<boolean> => {
 			const success = await loadUnitsInner(log, false, unitUris, 5);
 			if (success === false) return false;
-			throw new Error("Function not implemented.");
+			return true;
+		},
+		updateUnit:(newUnitUris)=> {
+			const success= updateUnitConfig(newUnitUris)
+			if(success)unitUris=newUnitUris
+			return success
 		},
 	};
 }
