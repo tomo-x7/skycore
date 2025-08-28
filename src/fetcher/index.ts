@@ -73,7 +73,7 @@ export async function createFetcher() {
 							feed.type === "timeline"
 								? { displayName: "following" }
 								: feedData.feeds.find((f) => f.uri === feed.value),
-					}));
+					})).filter((feed)=>feed.data!=null);
 			},
 			60 * 60 * 24,
 		),
