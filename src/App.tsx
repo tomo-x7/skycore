@@ -3,6 +3,7 @@ import { MainLayout } from "./components/Layout";
 import type { Loader } from "./loader/types";
 import { Home } from "./pages/home";
 import { Providers } from "./providers";
+import { Settings } from "./pages/settings";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -15,7 +16,7 @@ const router = createBrowserRouter(
 				<Route element={<>feeds</>} path="/feeds" />
 				<Route element={<>lists</>} path="/lists" />
 				<Route element={<>user</>} path="/profile/:user" />
-				<Route element={<>settings</>} path="/settings" />
+				<Route element={<Settings />} path="/settings" />
 			</Route>
 			{/* フォールバック */}
 			<Route element={<>not found</>} path="*" />
