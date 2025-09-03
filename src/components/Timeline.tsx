@@ -115,7 +115,7 @@ function MoreLoader({ cursor, observer }: { observer: IntersectionObserver | nul
 		};
 	}, [observer]);
 	return (
-		<div data-cursor={cursor} ref={ref} style={{ visibility: "hidden" }}>
+		<div data-cursor={cursor} ref={ref} style={{ visibility: "hidden",height:0 }}>
 			loadmore {cursor ?? "init"}
 		</div>
 	);
