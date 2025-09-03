@@ -91,9 +91,12 @@ export function UnitConfig({ loader }: { loader: Loader }) {
 				/>
 			))}
 			{!allValid && <div style={{ color: "red" }}>Some URIs are invalid</div>}
-			<button id="save" type="button" onClick={() => save()} disabled={testing || !allValid}>
-				保存
-			</button>
+			<div className="buttons">
+				<a href="/">←戻る</a>
+				<button id="save" type="button" onClick={() => save()} disabled={testing || !allValid}>
+					保存
+				</button>
+			</div>
 			<Toaster position={(isMobile ? "bottom-center" : "bottom-left") satisfies ToastPosition} />
 		</div>
 	);
